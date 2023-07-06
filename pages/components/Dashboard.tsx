@@ -14,6 +14,8 @@ import FeedModal from "./FeedModal";
 import { useContext, useEffect, useState } from "react";
 import { GuildContext } from "@/context/context";
 import { Guild, IInstance, IStats } from "@/types";
+import { set } from "mongoose";
+import { numberToHex } from "@/utils";
 
 const Dashboard = () => {
   const { data: session } = useSession();
@@ -22,10 +24,8 @@ const Dashboard = () => {
   const [instances, setInstances] = useState<IInstance[]>([]);
   const [stats, setStats] = useState<IStats>();
 
-  // Test data
-  const publicationsPosted = 420;
-  const profilesMonitored = 10;
-  const commandsUsed = 45;
+  const [publicationsPosted, setPublicationPosted] = useState(0);
+  const [profilesMonitored, setProfilesMonitored] = useState(0);
 
   const feeds: FeedItemProps[] = [
     {
@@ -43,11 +43,37 @@ const Dashboard = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const updateData = async (guild: Guild) => {
-    const response = await fetch(`/api/getData/?guildId=${guild.id}`);
+    let response = await fetch(`/api/getData/?guildId=${guild.id}`);
     const { instances, stats } = await response.json();
+
+    // TODO
+    // const profileIds = instances.map((i: IInstance) =>
+    //   numberToHex(Number(i.profileId))
+    // );
+
+    // const params = new URLSearchParams();
+    // params.append("profileIds", profileIds.join(","));
+
+    // response = await fetch(
+    //   `/api/getProfilePictures/?profileIds=${params.toString()}`
+    // );
+
+    // const profilePictures = await response.json();
+    // console.log(profilePictures);
+
+    const { postsPosted, commentsPosted, mirrorsPosted, collectsPosted } =
+      stats;
+    setPublicationPosted(
+      postsPosted + commentsPosted + mirrorsPosted + collectsPosted
+    );
+
+    const _profilesMonitored = [
+      ...new Set(instances.map((i: IInstance) => i.handle)),
+    ].length;
+
     setInstances(instances);
     setStats(stats);
-    console.log(instances, stats);
+    setProfilesMonitored(_profilesMonitored);
   };
 
   useEffect(() => {
@@ -102,7 +128,7 @@ const Dashboard = () => {
             <Card
               title="Commands used"
               icon={<KeyboardCommandKeyIcon fontSize="large" />}
-              value={commandsUsed}
+              value={stats?.commandsUsed ?? 0}
               bg="bg-red-600"
             />
           </div>
@@ -123,16 +149,16 @@ const Dashboard = () => {
               />
             </div>
             <div className="w-full space-y-4 relative">
-              {feeds.map((feed: FeedItemProps, index: number) => (
+              {instances.map((instance: IInstance, index: number) => (
                 <FeedItem
                   key={index.toString()}
-                  name={feed.name}
-                  handle={feed.handle}
-                  channelName={feed.channelName}
-                  imageUrl={feed.imageUrl}
-                  mirrors={feed.mirrors}
-                  collects={feed.collects}
-                  mentions={feed.mentions}
+                  name={"Name"}
+                  handle={instance.handle}
+                  channelName={"channel"}
+                  imageUrl={""}
+                  mirrors={instance.includeMirrors}
+                  collects={instance.includeInteractions}
+                  mentions={instance.mention}
                 />
               ))}
             </div>
