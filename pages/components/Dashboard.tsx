@@ -11,36 +11,23 @@ import Card from "./Card";
 import FeedItem, { FeedItemProps } from "./FeedItem";
 import AddFeed from "./AddFeed";
 import FeedModal from "./FeedModal";
+import { useContext, useEffect, useState } from "react";
+import { GuildContext } from "@/context/context";
+import { Guild, IInstance, IStats } from "@/types";
 
 const Dashboard = () => {
   const { data: session } = useSession();
+  const { guild, setGuild } = useContext(GuildContext);
+
+  const [instances, setInstances] = useState<IInstance[]>([]);
+  const [stats, setStats] = useState<IStats>();
 
   // Test data
   const publicationsPosted = 420;
   const profilesMonitored = 10;
   const commandsUsed = 45;
 
-  const discordUsername = "Ben#1234";
-
   const feeds: FeedItemProps[] = [
-    {
-      name: "Ben",
-      handle: "benbaessler",
-      channelName: "lens",
-      mirrors: true,
-      collects: true,
-      mentions: true,
-      imageUrl: "https://avatars.githubusercontent.com/u/78696428?v=4",
-    },
-    {
-      name: "Ben",
-      handle: "benbaessler",
-      channelName: "lens",
-      mirrors: true,
-      collects: true,
-      mentions: true,
-      imageUrl: "https://avatars.githubusercontent.com/u/78696428?v=4",
-    },
     {
       name: "Ben",
       handle: "benbaessler",
@@ -54,6 +41,20 @@ const Dashboard = () => {
 
   // Add Feed Modal
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const updateData = async (guild: Guild) => {
+    const response = await fetch(`/api/getData/?guildId=${guild.id}`);
+    const { instances, stats } = await response.json();
+    setInstances(instances);
+    setStats(stats);
+    console.log(instances, stats);
+  };
+
+  useEffect(() => {
+    if (guild) {
+      updateData(guild);
+    }
+  }, [guild]);
 
   return (
     <>
