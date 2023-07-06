@@ -6,7 +6,7 @@ import Dashboard from "./components/Dashboard";
 import Navbar from "./components/Navbar";
 
 import { useSession, signIn } from "next-auth/react";
-import { getOwnedGuilds } from "@/utils/getGuilds";
+import { getOwnedGuilds } from "@/utils";
 import { GuildContext } from "@/context/context";
 
 export default function Home() {
