@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
-import DiscordProvider from 'next-auth/providers/discord';
+import DiscordProvider from "next-auth/providers/discord";
 require("dotenv").config();
 
 export const authOptions = {
@@ -11,12 +11,32 @@ export const authOptions = {
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: 'identify guilds'
-        }
-      }
+          scope: "identify guilds",
+        },
+      },
     }),
-    // ...add more providers here
   ],
+  callbacks: {
+    jwt: async ({ token, account, profile }: any) => {
+      if (account) {
+        token.accessToken = account.access_token;
+        token.tokenType = account.token_type;
+      }
+      if (profile) {
+        token.profile = profile;
+      }
+      return token;
+    },
+    // @ts-ignore
+    session: async ({ session, token }) => {
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
+      session.tokenType = token.tokenType;
+      session.discordUser = token.profile;
+
+      return session;
+    },
+  },
 };
 
 export default NextAuth(authOptions);
