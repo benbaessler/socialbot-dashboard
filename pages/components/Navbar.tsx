@@ -6,12 +6,21 @@ import LogoImage from "@/assets/logo.png";
 import { Select, Button } from "@chakra-ui/react";
 
 import { useSession, signOut } from "next-auth/react";
-import { useState } from "react";
+import { useContext } from "react";
+import { GuildContext } from "@/context/context";
+import { Guild } from "@/types";
 
 const Navbar = ({ guilds }: any) => {
   const { data: session, status } = useSession();
+  const { guild, setGuild } = useContext(GuildContext);
 
-  const [guild, setGuild] = useState(guilds[0]);
+  const handleGuildChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedGuildId = event.target.value;
+    const selectedGuild = guilds.find(
+      (guild: Guild) => guild.id === selectedGuildId
+    );
+    setGuild(selectedGuild);
+  };
 
   return (
     <nav className="flex w-full p-4 justify-between">
@@ -29,8 +38,8 @@ const Navbar = ({ guilds }: any) => {
       </div>
 
       <div className="flex gap-3">
-        <Select defaultValue={guilds[0].name}>
-          {guilds?.map((guild: any) => (
+        <Select defaultValue={guild} onChange={handleGuildChange}>
+          {guilds?.map((guild: Guild) => (
             <option key={guild.id} value={guild.id}>
               {guild.name}
             </option>
