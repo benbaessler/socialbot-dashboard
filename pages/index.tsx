@@ -4,7 +4,7 @@ import Dashboard from "./components/Dashboard";
 import Navbar from "./components/Navbar";
 
 import { useSession, signIn } from "next-auth/react";
-import { getOwnedGuilds } from "./getGuilds";
+import { getOwnedGuilds } from "@/utils/getGuilds";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -18,14 +18,14 @@ export default function Home() {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [session]);
 
   if (status == "unauthenticated") {
     signIn("discord");
   } else {
     return (
       <main>
-        <Navbar />
+        <Navbar guilds={guilds} />
         <div className="flex justify-center">
           <Dashboard />
         </div>
