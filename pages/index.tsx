@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 
-import { Spinner } from "@chakra-ui/react";
+import Head from "next/head";
 
 import Dashboard from "./components/Dashboard";
 import Navbar from "./components/Navbar";
@@ -33,7 +33,9 @@ export default function Home() {
       data.guilds
     );
 
-    const botGuilds = ownedGuilds.filter((g: any) => botGuildIds.includes(g.id));
+    const botGuilds = ownedGuilds.filter((g: any) =>
+      botGuildIds.includes(g.id)
+    );
 
     if (botGuilds.length == 0) return;
 
@@ -49,16 +51,25 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
-  if (status == "unauthenticated") {
-    return <SignIn />;
-  } else {
-    return (
-      <main className="bg-black">
-        <Navbar guilds={guilds} />
-        <div className="flex justify-center">
-          <Dashboard isUser={isUser} />
-        </div>
-      </main>
-    );
-  }
+  return (
+    <>
+      <Head>
+        <title>Lens Echo - Dashboard</title>
+        <meta
+          name="description"
+          content="View and manage your Lens Echo activity + statistics."
+        />
+      </Head>
+      {status == "unauthenticated" ? (
+        <SignIn />
+      ) : (
+        <main className="bg-black">
+          <Navbar guilds={guilds} />
+          <div className="flex justify-center">
+            <Dashboard isUser={isUser} />
+          </div>
+        </main>
+      )}
+    </>
+  );
 }
