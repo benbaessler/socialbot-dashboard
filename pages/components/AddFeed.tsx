@@ -9,11 +9,11 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { AtSignIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ChannelsContext } from "@/context/Channels";
 
 interface Props {
   className: string;
-  editMode?: boolean;
 }
 
 interface Options {
@@ -22,16 +22,21 @@ interface Options {
   mentions: boolean;
 }
 
-const AddFeed = ({ className, editMode }: Props) => {
+const AddFeed = ({ className }: Props) => {
   // Test data
-  const channelNames = ["general", "random", "announcements", "lens-updates"];
+  const { channels } = useContext(ChannelsContext);
 
-  // Checkbox handlers
+  const [invalidHandle, setInvalidHandle] = useState(false);
+
+  const [channel, setChannel] = useState<any>();
+  const [handle, setHandle] = useState("");
   const [options, setOptions] = useState<Options>({
     mirrors: false,
     collects: false,
     mentions: false,
   });
+
+  const handleInputChange = (event: any) => setHandle(event.target.value);
 
   const handleCheckboxChange = (value: keyof Options) => {
     setOptions((prevOptions) => ({
@@ -40,24 +45,40 @@ const AddFeed = ({ className, editMode }: Props) => {
     }));
   };
 
+  const handleSubmit = async () => {
+    console.log(handle, options, channel);
+
+    const res = await fetch(`/api/getProfile?handle=${handle}`);
+    const profile = await res.json();
+
+    if (profile == null) {
+      console.log("!")
+      return setInvalidHandle(true);
+    }
+
+    setInvalidHandle(false);
+  };
+
   return (
     <div className={`${className} flex-col space-y-5 bg-slate-800 rounded-xl`}>
-      {!editMode && (
-        <div>
-          <div className="flex items-center mb-2">
-            <span className="font-semibold mr-2">Handle</span>
-            <span className="text-sm text-slate-400">
-              The Lens profile handle to add.
-            </span>
-          </div>
-          <InputGroup>
-            <InputLeftElement pointerEvents="none">
-              <AtSignIcon />
-            </InputLeftElement>
-            <Input />
-          </InputGroup>
+      <div>
+        <div className="flex items-center mb-2">
+          <span className="font-semibold mr-2">Handle</span>
+          <span className="text-sm text-slate-400">
+            The Lens profile handle to add.
+          </span>
         </div>
-      )}
+        <InputGroup>
+          <InputLeftElement pointerEvents="none">
+            <AtSignIcon />
+          </InputLeftElement>
+          <Input
+            value={handle}
+            onChange={handleInputChange}
+            isInvalid={invalidHandle}
+          />
+        </InputGroup>
+      </div>
       <div>
         <div className="flex items-center mb-2">
           <span className="font-semibold mr-2">Channel</span>
@@ -65,10 +86,17 @@ const AddFeed = ({ className, editMode }: Props) => {
             The channel to send updates to.
           </span>
         </div>
-        <Select placeholder="Select a channel">
-          {channelNames.map((channelName) => (
-            <option key={channelName} value={channelName}>
-              #{channelName}
+        <Select
+          placeholder="Select a channel"
+          onChange={(e) => {
+            setChannel(
+              channels.find((channel: any) => channel.name == e.target.value)
+            );
+          }}
+        >
+          {channels.map((channel: any) => (
+            <option key={channel.id} value={channel.name}>
+              #{channel.name}
             </option>
           ))}
         </Select>
@@ -107,12 +135,8 @@ const AddFeed = ({ className, editMode }: Props) => {
         </CheckboxGroup>
       </div>
 
-      <Button
-        colorScheme="green"
-        variant="solid"
-        onClick={() => console.log(options)}
-      >
-        {editMode ? "Confirm" : "Start monitor"}
+      <Button colorScheme="green" variant="solid" onClick={handleSubmit} isDisabled={!handle || !channel}>
+        Start monitor
       </Button>
     </div>
   );
