@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { LensClient, production } from "@lens-protocol/client";
+import { LensClient, ProfileFragment, production } from "@lens-protocol/client";
 require("dotenv").config();
 
 export const connectDB = async () => {
@@ -29,4 +29,31 @@ export const parseHandle = (input: string): string => {
     return input + ".lens";
   }
   return input;
+};
+
+export const getPictureUrl = (profile: ProfileFragment) => {
+  const picture = profile.picture;
+  return picture
+    ? picture.__typename == "MediaSet"
+      ? parseUri(picture.original.url)
+      : // @ts-ignore
+        parseUri(picture.uri)
+    : "";
+};
+
+export const parseIpfs = (ipfs: string) => {
+  const hash = ipfs.split("/")[ipfs.split("/").length - 1];
+  return `https://ipfs.io/ipfs/${hash}`;
+};
+
+export const parseUri = (uri: string) => {
+  if (uri.includes("ipfs")) {
+    return parseIpfs(uri);
+  }
+  if (uri.startsWith("https://")) {
+    return uri;
+  }
+  if (uri.startsWith("ar://")) {
+    return "https://arweave.net/" + uri.split("/")[uri.split("/").length - 1];
+  }
 };
