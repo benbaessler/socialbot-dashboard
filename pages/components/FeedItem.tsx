@@ -78,7 +78,7 @@ const FeedItem = ({ data }: Props) => {
           />
           <IconButton
             aria-label="delete"
-            colorScheme="blue"
+            colorScheme="red"
             icon={<CloseIcon color="white" />}
           />
         </div>
