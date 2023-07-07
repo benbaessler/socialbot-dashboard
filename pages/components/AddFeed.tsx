@@ -10,7 +10,10 @@ import {
 } from "@chakra-ui/react";
 import { AtSignIcon } from "@chakra-ui/icons";
 import { useState, useContext } from "react";
+import { GuildContext } from "@/context/Guild";
 import { ChannelsContext } from "@/context/Channels";
+import { hexToNumber } from "@/utils";
+import axios from "axios";
 
 interface Props {
   className: string;
@@ -23,8 +26,8 @@ interface Options {
 }
 
 const AddFeed = ({ className }: Props) => {
-  // Test data
   const { channels } = useContext(ChannelsContext);
+  const { guild } = useContext(GuildContext);
 
   const [invalidHandle, setInvalidHandle] = useState(false);
 
@@ -48,15 +51,37 @@ const AddFeed = ({ className }: Props) => {
   const handleSubmit = async () => {
     console.log(handle, options, channel);
 
-    const res = await fetch(`/api/getProfile?handle=${handle}`);
+    const res = await fetch(`/api/lens/getProfile?handle=${handle}`);
     const profile = await res.json();
 
     if (profile == null) {
-      console.log("!")
       return setInvalidHandle(true);
     }
-
     setInvalidHandle(false);
+
+    // const create = await fetch("/api/database/create", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     guildId: guild.id,
+    //     channelId: channel.id,
+    //     handle: profile.handle,
+    //     profileId: hexToNumber(profile.id),
+    //     ownedBy: profile.ownedBy,
+    //     includeMirrors: options.mirrors,
+    //     includeInteractions: options.collects,
+    //     mention: options.mentions,
+    //   }),
+    // });
+
+    console.log("Instance saved to database");
+
+    setHandle("");
+    setChannel(undefined);
+    setOptions({
+      mirrors: false,
+      collects: false,
+      mentions: false,
+    });
   };
 
   return (
@@ -135,7 +160,12 @@ const AddFeed = ({ className }: Props) => {
         </CheckboxGroup>
       </div>
 
-      <Button colorScheme="green" variant="solid" onClick={handleSubmit} isDisabled={!handle || !channel}>
+      <Button
+        colorScheme="green"
+        variant="solid"
+        onClick={handleSubmit}
+        isDisabled={!handle || !channel}
+      >
         Start monitor
       </Button>
     </div>
