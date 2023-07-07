@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { Button, IconButton, useDisclosure } from "@chakra-ui/react";
+import { IconButton, useDisclosure } from "@chakra-ui/react";
 
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import PersonIcon from "@mui/icons-material/Person";

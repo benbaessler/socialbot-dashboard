@@ -60,16 +60,18 @@ export default function Home() {
           content="View and manage your Lens Echo activity + statistics."
         />
       </Head>
-      {status == "unauthenticated" ? (
-        <SignIn />
-      ) : (
-        <main className="bg-black">
-          <Navbar guilds={guilds} />
-          <div className="flex justify-center">
-            <Dashboard isUser={isUser} />
-          </div>
-        </main>
-      )}
+      <main className="bg-black">
+        {status !== "authenticated" ? (
+          <SignIn />
+        ) : (
+          <>
+            <Navbar guilds={guilds} />
+            <div className="flex justify-center">
+              <Dashboard isUser={isUser} />
+            </div>
+          </>
+        )}
+      </main>
     </>
   );
 }
