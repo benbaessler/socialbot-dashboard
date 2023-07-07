@@ -6,7 +6,11 @@
   transition-duration: 0.2s;
 }
 
+:root {
+  color: white !important;
+}
+
 body, html {
-  color: white;
-  background: black;
+  color: white !important;
+  background: black !important;
 }

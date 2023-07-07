@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 
 const SignIn = () => {
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-screen bg-black">
       <div className="flex flex-col items-center justify-center max-w-4/5 p-8 w-96 h-96 bg-slate-800 rounded-lg">
         <Image
           src={LogoImage}
