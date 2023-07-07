@@ -4,6 +4,7 @@ import { Spinner } from "@chakra-ui/react";
 
 import Dashboard from "./components/Dashboard";
 import Navbar from "./components/Navbar";
+import SignIn from "./components/SignIn";
 
 import { useSession, signIn } from "next-auth/react";
 import { getOwnedGuilds } from "@/utils/discord";
@@ -49,7 +50,7 @@ export default function Home() {
   }, [session]);
 
   if (status == "unauthenticated") {
-    signIn("discord");
+    return <SignIn />;
   } else {
     return (
       <main>
