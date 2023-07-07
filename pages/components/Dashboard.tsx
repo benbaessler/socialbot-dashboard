@@ -8,19 +8,20 @@ import KeyboardCommandKeyIcon from "@mui/icons-material/KeyboardCommandKey";
 import { AddIcon } from "@chakra-ui/icons";
 
 import Card from "./Card";
-import FeedItem, { FeedItemProps } from "./FeedItem";
+import FeedItem  from "./FeedItem";
 import AddFeed from "./AddFeed";
 import FeedModal from "./FeedModal";
 import { useContext, useEffect, useState } from "react";
-import { GuildContext } from "@/context/context";
-import { Guild, IInstance, IStats } from "@/types";
-import { getChannel } from "@/utils/discord";
+import { GuildContext } from "@/context/Guild";
+import { ChannelsContext } from "@/context/Channels";
+import { Guild, IInstance, IStats, IFeed } from "@/types";
 
 const Dashboard = () => {
   const { data: session } = useSession();
-  const { guild, setGuild } = useContext(GuildContext);
+  const { guild } = useContext(GuildContext);
+  const { channels, setChannels } = useContext(ChannelsContext);
 
-  const [feeds, setFeeds] = useState<FeedItemProps[]>([]);
+  const [feeds, setFeeds] = useState<IFeed[]>([]);
   const [stats, setStats] = useState<IStats>();
 
   const [publicationsPosted, setPublicationPosted] = useState(0);
@@ -33,8 +34,6 @@ const Dashboard = () => {
     let response = await fetch(`/api/getData/?guildId=${guild.id}`);
     const { instances, stats } = await response.json();
 
-    // Get channel name
-
     const channelIds = [
       ...new Set(instances.map((i: IInstance) => i.channelId)),
     ] as string[];
@@ -45,7 +44,7 @@ const Dashboard = () => {
       )
     );
 
-    const feeds: FeedItemProps[] = instances.map((instance: IInstance) => ({
+    const feeds: IFeed[] = instances.map((instance: IInstance) => ({
       name: "Name",
       handle: instance.handle,
       channelName: channels.find((c) => c.id === instance.channelId).name,
@@ -81,6 +80,7 @@ const Dashboard = () => {
       ...new Set(instances.map((i: IInstance) => i.handle)),
     ].length;
 
+    setChannels(channels);
     setFeeds(feeds);
     setStats(stats);
     setProfilesMonitored(_profilesMonitored);
@@ -90,6 +90,7 @@ const Dashboard = () => {
     if (guild) {
       updateData(guild);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [guild]);
 
   return (
@@ -159,17 +160,8 @@ const Dashboard = () => {
               />
             </div>
             <div className="w-full space-y-4 relative overflow-y-auto scrollbar-hide">
-              {feeds.map((feed: FeedItemProps, index: number) => (
-                <FeedItem
-                  key={index.toString()}
-                  name={feed.name}
-                  handle={feed.handle}
-                  channelName={feed.channelName}
-                  imageUrl={feed.imageUrl}
-                  mirrors={feed.mirrors}
-                  collects={feed.collects}
-                  mentions={feed.mentions}
-                />
+              {feeds.map((feed: IFeed, index: number) => (
+                <FeedItem key={index.toString()} data={feed} />
               ))}
             </div>
           </div>
