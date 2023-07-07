@@ -7,7 +7,7 @@ import { Select, Button } from "@chakra-ui/react";
 
 import { useSession, signOut } from "next-auth/react";
 import { useContext } from "react";
-import { GuildContext } from "@/context/context";
+import { GuildContext } from "@/context/Guild";
 import { Guild } from "@/types";
 
 const Navbar = ({ guilds }: any) => {

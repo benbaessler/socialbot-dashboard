@@ -7,21 +7,27 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import AddFeed from "./AddFeed";
+import EditFeed from "./EditFeed";
+import { IFeed } from "@/types";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  editMode?: boolean;
+  editFeed?: IFeed;
 }
 
-const FeedModal = ({ isOpen, onClose, editMode = false }: Props) => (
+const FeedModal = ({ isOpen, onClose, editFeed }: Props) => (
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay backdropBlur="20px" />
     <ModalContent className="bg-slate-800 pb-3">
-      <ModalHeader>{editMode ? "Edit" : "Add"} Feed</ModalHeader>
+      <ModalHeader>{editFeed ? "Edit" : "Add"} Feed</ModalHeader>
       <ModalCloseButton />
       <ModalBody>
-        <AddFeed className="flex" editMode={editMode} />
+        {editFeed ? (
+          <EditFeed className="flex" feed={editFeed} />
+        ) : (
+          <AddFeed className="flex" />
+        )}
       </ModalBody>
     </ModalContent>
   </Modal>

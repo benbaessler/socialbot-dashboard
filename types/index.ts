@@ -6,6 +6,7 @@ export interface Guild {
   owner: boolean;
   permissions: number;
   permissions_new: string;
+  channels?: any[];
 }
 
 export interface IStats extends Document {
@@ -28,4 +29,14 @@ export interface IInstance extends Document {
   includeInteractions: boolean;
   mention: boolean;
   webhookUrl: string;
+}
+
+export interface IFeed {
+  name: string;
+  handle: string;
+  channelName: string;
+  mirrors: boolean;
+  collects: boolean;
+  mentions: boolean;
+  imageUrl: string;
 }
