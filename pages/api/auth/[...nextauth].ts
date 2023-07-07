@@ -1,5 +1,4 @@
 import NextAuth from "next-auth";
-import Providers from "next-auth/providers";
 import DiscordProvider from "next-auth/providers/discord";
 require("dotenv").config();
 
@@ -37,6 +36,7 @@ export const authOptions = {
       return session;
     },
   },
+  secret: "thisisasecret"
 };
 
 export default NextAuth(authOptions);
