@@ -35,6 +35,7 @@ export interface IFeed {
   name: string;
   handle: string;
   channelName: string;
+  channelId: string;
   mirrors: boolean;
   collects: boolean;
   mentions: boolean;

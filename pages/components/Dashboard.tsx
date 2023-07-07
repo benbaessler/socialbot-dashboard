@@ -45,6 +45,7 @@ const Dashboard = () => {
       handle: instance.handle,
       // @ts-ignore
       channelName: channels.find((c) => c.id === instance.channelId).name,
+      channelId: instance.channelId,
       mirrors: instance.includeMirrors,
       collects: instance.includeInteractions,
       mentions: instance.mention,

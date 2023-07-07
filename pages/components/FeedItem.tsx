@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { useContext } from "react";
 import { IconButton, useDisclosure } from "@chakra-ui/react";
 import {
   AtSignIcon,
@@ -12,6 +13,7 @@ import {
 import OptionIcon from "./OptionIcon";
 import FeedModal from "./FeedModal";
 import { IFeed } from "@/types";
+import { GuildContext } from "@/context/Guild";
 
 interface Props {
   data: IFeed;
@@ -20,6 +22,7 @@ interface Props {
 const FeedItem = ({ data }: Props) => {
   // Edit Feed Modal
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { guild } = useContext(GuildContext);
 
   const icons = [];
   if (data.mentions)
@@ -42,6 +45,19 @@ const FeedItem = ({ data }: Props) => {
         title={"Collects included"}
         icon={<CopyIcon fontSize="small" />}
       />
+    );
+
+  const handleDelete = async () =>
+    await fetch(
+      "api/database/delete?" +
+        new URLSearchParams({
+          guildId: guild.id,
+          handle: data.handle,
+          channelId: data.channelId,
+        }),
+      {
+        method: "POST",
+      }
     );
 
   return (
@@ -77,6 +93,7 @@ const FeedItem = ({ data }: Props) => {
             icon={<EditIcon color="white" boxSize={5} />}
           />
           <IconButton
+            onClick={handleDelete}
             aria-label="delete"
             colorScheme="red"
             icon={<CloseIcon color="white" />}
