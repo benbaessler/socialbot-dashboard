@@ -14,14 +14,12 @@ export default function Home() {
   const { guild, setGuild } = useContext(GuildContext);
 
   const [guilds, setGuilds] = useState();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (status == "authenticated") {
       getOwnedGuilds((session as any)?.accessToken).then((guilds) => {
         setGuilds(guilds);
         setGuild(guilds[0]);
-        setLoading(false);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -30,13 +28,6 @@ export default function Home() {
   if (status == "unauthenticated") {
     signIn("discord");
   } else {
-    if (loading) {
-      return (
-        <div className="h-screen flex items-center justify-center">
-          <Spinner thickness="5px" speed="0.7s" color="white" size="xl" />
-        </div>
-      );
-    }
     return (
       <main>
         <Navbar guilds={guilds} />
