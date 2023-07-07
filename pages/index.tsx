@@ -12,15 +12,38 @@ import { GuildContext } from "@/context/Guild";
 export default function Home() {
   const { data: session, status } = useSession();
   const { guild, setGuild } = useContext(GuildContext);
-
   const [guilds, setGuilds] = useState();
+
+  const [isUser, setIsUser] = useState(false);
+
+  const findCommonValues = (arr1: string[], arr2: string[]) =>
+    arr1.filter((value: string) => arr2.includes(value));
+
+  const fetchData = async () => {
+    const ownedGuilds = await getOwnedGuilds((session as any)?.accessToken);
+
+    if (ownedGuilds.length == 0) return;
+
+    const response = await fetch("/api/database/getBotGuilds");
+    const data = await response.json();
+
+    const botGuildIds = findCommonValues(
+      ownedGuilds.map((g: any) => g.id),
+      data.guilds
+    );
+
+    const botGuilds = ownedGuilds.filter((g: any) => botGuildIds.includes(g.id));
+
+    if (botGuilds.length == 0) return;
+
+    setIsUser(true);
+    setGuilds(botGuilds);
+    setGuild(botGuilds[0]);
+  };
 
   useEffect(() => {
     if (status == "authenticated") {
-      getOwnedGuilds((session as any)?.accessToken).then((guilds) => {
-        setGuilds(guilds);
-        setGuild(guilds[0]);
-      });
+      fetchData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
@@ -32,7 +55,7 @@ export default function Home() {
       <main>
         <Navbar guilds={guilds} />
         <div className="flex justify-center">
-          <Dashboard />
+          <Dashboard isUser={isUser} />
         </div>
       </main>
     );
