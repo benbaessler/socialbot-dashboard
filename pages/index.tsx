@@ -6,8 +6,8 @@ import Dashboard from "./components/Dashboard";
 import Navbar from "./components/Navbar";
 
 import { useSession, signIn } from "next-auth/react";
-import { getOwnedGuilds } from "@/utils";
-import { GuildContext } from "@/context/context";
+import { getOwnedGuilds } from "@/utils/discord";
+import { GuildContext } from "@/context/Guild";
 
 export default function Home() {
   const { data: session, status } = useSession();
