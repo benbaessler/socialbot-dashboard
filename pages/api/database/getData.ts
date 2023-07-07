@@ -2,10 +2,10 @@ import Instance from "@/models/Instance";
 import Stats from "@/models/Stats";
 import { connectDB } from "@/utils";
 
-connectDB();
-
 // @ts-ignore
 const handler = async (req, res) => {
+  await connectDB();
+  
   const { guildId } = req.query;
 
   try {
