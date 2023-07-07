@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { IconButton, useDisclosure } from "@chakra-ui/react";
+import { Button, IconButton, useDisclosure } from "@chakra-ui/react";
 
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import PersonIcon from "@mui/icons-material/Person";
@@ -19,7 +19,11 @@ import { FeedsContext } from "@/context/Feeds";
 import { Guild, IInstance, IStats, IFeed } from "@/types";
 import { getPictureUrl, numberToHex } from "@/utils";
 
-const Dashboard = () => {
+interface Props {
+  isUser: boolean;
+}
+
+const Dashboard = ({ isUser }: Props) => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
   const { guild } = useContext(GuildContext);
@@ -35,6 +39,7 @@ const Dashboard = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const updateData = async (guild: Guild) => {
+    setLoading(true);
     let response = await fetch(`/api/database/getData/?guildId=${guild.id}`);
     const { instances, stats } = await response.json();
 
@@ -43,7 +48,7 @@ const Dashboard = () => {
     const channels = await response.json();
 
     // TODO: Get profile data
-    const profileIds = instances.map((i: IInstance) =>
+    const profileIds = (instances ?? []).map((i: IInstance) =>
       numberToHex(Number(i.profileId))
     );
 
@@ -60,9 +65,7 @@ const Dashboard = () => {
       const params = new URLSearchParams();
       params.append("profileIds", batch.join(","));
 
-      return fetch(
-        `/api/lens/getProfiles/?profileIds=${params.toString()}`
-      )
+      return fetch(`/api/lens/getProfiles/?profileIds=${params.toString()}`)
         .then((response) => response.json())
         .then((data) => data.profiles.items);
     });
@@ -72,7 +75,7 @@ const Dashboard = () => {
 
     const profiles = profileBatches.flat();
 
-    const _feeds: IFeed[] = instances.map((instance: IInstance) => {
+    const _feeds: IFeed[] = (instances ?? []).map((instance: IInstance) => {
       const profile = profiles.find(
         // @ts-ignore
         (p) => p.id === numberToHex(Number(instance.profileId))
@@ -116,8 +119,10 @@ const Dashboard = () => {
     if (guild) {
       updateData(guild);
     }
+
+    setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [guild]);
+  }, [guild, isUser]);
 
   if (loading) {
     return (
@@ -130,7 +135,7 @@ const Dashboard = () => {
     <>
       <FeedModal isOpen={isOpen} onClose={onClose} />
       <div className="flex flex-col p-10 w-full max-w-6xl space-y-6">
-        <div className="bg-slate-800 p-10 rounded-xl">
+        <div className="flex flex-col space-y-4 bg-slate-800 p-10 rounded-xl">
           <h1 className="text-3xl font-bold mb-4">
             Welcome back,{" "}
             <span className="text-blue-400">{session?.user?.name}</span>! 👋
@@ -152,53 +157,71 @@ const Dashboard = () => {
             </a>
             .
           </span>
+          {!isUser && <span className="text-lg">
+            {
+              "It looks like you're not using Lens Echo yet, invite the bot to your server "
+            }
+            <a
+              href="https://lensecho.xyz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sky-400 hover:text-sky-500 font-semibold"
+            >
+              here
+            </a>
+          </span>}
         </div>
-
-        <div className="bg-slate-800 py-7 px-10 rounded-xl">
-          <h2 className="text-xl font-semibold mb-7">Overview</h2>
-          <div className="flex flex-wrap gap-x-4 justify-center">
-            <Card
-              title="Publications posted"
-              icon={<QuestionAnswerIcon fontSize="large" />}
-              value={publicationsPosted}
-              bg="bg-sky-700"
-            />
-            <Card
-              title="Profiles monitored"
-              icon={<PersonIcon fontSize="large" />}
-              value={profilesMonitored}
-              bg="bg-green-600"
-            />
-            <Card
-              title="Commands used"
-              icon={<KeyboardCommandKeyIcon fontSize="large" />}
-              value={stats?.commandsUsed ?? 0}
-              bg="bg-red-600"
-            />
-          </div>
-        </div>
-
-        <div className="flex lg:max-h-128">
-          <AddFeed className="hidden lg:flex mr-6 w-1/3 p-7" />
-
-          <div className="flex flex-col bg-slate-800 py-7 px-10 rounded-xl flex-1 w-2/3">
-            <div className="flex justify-between w-full items-center mb-7">
-              <h2 className="text-xl font-semibold">Feeds ({feeds.length})</h2>
-              <IconButton
-                onClick={onOpen}
-                className="lg:hidden"
-                aria-label="Add feed"
-                colorScheme="blue"
-                icon={<AddIcon color="white" boxSize={5} />}
-              />
+        {isUser && (
+          <>
+            <div className="bg-slate-800 py-7 px-10 rounded-xl">
+              <h2 className="text-xl font-semibold mb-7">Overview</h2>
+              <div className="flex flex-wrap gap-x-4 justify-center">
+                <Card
+                  title="Publications posted"
+                  icon={<QuestionAnswerIcon fontSize="large" />}
+                  value={publicationsPosted}
+                  bg="bg-sky-700"
+                />
+                <Card
+                  title="Profiles monitored"
+                  icon={<PersonIcon fontSize="large" />}
+                  value={profilesMonitored}
+                  bg="bg-green-600"
+                />
+                <Card
+                  title="Commands used"
+                  icon={<KeyboardCommandKeyIcon fontSize="large" />}
+                  value={stats?.commandsUsed ?? 0}
+                  bg="bg-red-600"
+                />
+              </div>
             </div>
-            <div className="w-full space-y-4 relative overflow-y-auto scrollbar-hide">
-              {feeds.map((feed: IFeed, index: number) => (
-                <FeedItem key={index.toString()} data={feed} />
-              ))}
+
+            <div className="flex lg:max-h-128">
+              <AddFeed className="hidden lg:flex mr-6 w-1/3 p-7" />
+
+              <div className="flex flex-col bg-slate-800 py-7 px-10 rounded-xl flex-1 w-2/3">
+                <div className="flex justify-between w-full items-center mb-7">
+                  <h2 className="text-xl font-semibold">
+                    Feeds ({feeds.length})
+                  </h2>
+                  <IconButton
+                    onClick={onOpen}
+                    className="lg:hidden"
+                    aria-label="Add feed"
+                    colorScheme="blue"
+                    icon={<AddIcon color="white" boxSize={5} />}
+                  />
+                </div>
+                <div className="w-full space-y-4 relative overflow-y-auto scrollbar-hide">
+                  {feeds.map((feed: IFeed, index: number) => (
+                    <FeedItem key={index.toString()} data={feed} />
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </>
   );
