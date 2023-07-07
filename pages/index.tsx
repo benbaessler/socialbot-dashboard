@@ -53,7 +53,7 @@ export default function Home() {
     return <SignIn />;
   } else {
     return (
-      <main>
+      <main className="bg-black">
         <Navbar guilds={guilds} />
         <div className="flex justify-center">
           <Dashboard isUser={isUser} />
