@@ -25,9 +25,9 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
   const [invalidInput, setInvalidInput] = useState(true);
 
   const [options, setOptions] = useState<Options>({
-    mirrors: feed.mirrors,
-    collects: feed.collects,
-    mentions: feed.mentions,
+    mirrors: feed?.mirrors,
+    collects: feed?.collects,
+    mentions: feed?.mentions,
   });
 
   const defaultValue = Object.keys(options).filter(
@@ -46,7 +46,7 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
     const _feeds = feeds;
     const feedIndex = _feeds.findIndex(
       // @ts-ignore
-      (f) => f.handle == feed.handle && f.channelId == feed.channelId
+      (f) => f.handle == feed?.handle && f.channelId == feed?.channelId
     );
 
     _feeds[feedIndex].mirrors = options.mirrors;
@@ -57,10 +57,10 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
       "/api/database/update?" +
         new URLSearchParams({
           guildId: guild.id,
-          handle: feed.handle,
+          handle: feed?.handle,
           channelId: channels.find(
             // @ts-ignore
-            (channel) => channel.name == feed.channelName
+            (channel) => channel.name == feed?.channelName
           ).id,
           mirrors: options.mirrors.toString(),
           collects: options.collects.toString(),
@@ -76,9 +76,9 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
 
   useEffect(() => {
     if (
-      options.mirrors == feed.mirrors &&
-      options.collects == feed.collects &&
-      options.mentions == feed.mentions
+      options.mirrors == feed?.mirrors &&
+      options.collects == feed?.collects &&
+      options.mentions == feed?.mentions
     ) {
       setInvalidInput(true);
     } else {
@@ -89,8 +89,8 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
 
   return (
     <div className={`${className} flex-col space-y-5 bg-slate-800 rounded-xl`}>
-      <span className="font-semibold mr-2">Handle: @{feed.handle}</span>
-      <span className="font-semibold mr-2">Channel: #{feed.channelName}</span>
+      <span className="font-semibold mr-2">Handle: @{feed?.handle}</span>
+      <span className="font-semibold mr-2">Channel: #{feed?.channelName}</span>
       <div>
         <div className="flex items-center mb-2">
           <span className="font-semibold mr-2">Options</span>

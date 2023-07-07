@@ -27,21 +27,21 @@ const FeedItem = ({ data }: Props) => {
   const { feeds, setFeeds } = useContext(FeedsContext);
 
   const icons = [];
-  if (data.mentions)
+  if (data?.mentions)
     icons.push(
       <OptionIcon
         title={"Mentions everyone"}
         icon={<AtSignIcon fontSize="small" />}
       />
     );
-  if (data.mirrors)
+  if (data?.mirrors)
     icons.push(
       <OptionIcon
         title={"Mirrors included"}
         icon={<RepeatIcon fontSize="small" />}
       />
     );
-  if (data.collects)
+  if (data?.collects)
     icons.push(
       <OptionIcon
         title={"Collects included"}
@@ -52,7 +52,7 @@ const FeedItem = ({ data }: Props) => {
   const handleDelete = async () => {
     const newFeeds = feeds.filter(
       (feed: IFeed) =>
-        feed.handle !== data.handle || feed.channelId !== data.channelId
+        feed.handle !== data?.handle || feed.channelId !== data?.channelId
     );
     setFeeds(newFeeds);
 
@@ -60,8 +60,8 @@ const FeedItem = ({ data }: Props) => {
       "api/database/delete?" +
         new URLSearchParams({
           guildId: guild.id,
-          handle: data.handle,
-          channelId: data.channelId,
+          handle: data?.handle,
+          channelId: data?.channelId,
         }),
       {
         method: "POST",
@@ -75,20 +75,20 @@ const FeedItem = ({ data }: Props) => {
       <div className="flex justify-between items-center p-4 bg-slate-600 rounded-lg space-between">
         <div className="flex items-center">
           <Image
-            src={data.imageUrl}
-            alt={data.handle}
+            src={data?.imageUrl}
+            alt={data?.handle}
             width={55}
             height={55}
             className="rounded-full mr-3"
           />
           <div className="space-y-1.5">
             <div className="flex items-center space-x-2">
-              <span className="font-semibold">{data.name}</span>
-              <span className="text-sm text-slate-300">@{data.handle}</span>
+              <span className="font-semibold">{data?.name}</span>
+              <span className="text-sm text-slate-300">@{data?.handle}</span>
             </div>
             <div className="flex items-center space-x-3 text-sm">
               <div className="text-blue-600 bg-gray-400	py-1 px-2 rounded-full">
-                #{data.channelName}
+                #{data?.channelName}
               </div>
               {...icons}
             </div>
