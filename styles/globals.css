@@ -10,3 +10,7 @@ body, html {
   color: white !important;
   background: black;
 }
+
+.feed-modal {
+  background-color: #1e293b !important
+}

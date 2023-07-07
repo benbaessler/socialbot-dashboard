@@ -19,7 +19,7 @@ interface Props {
 const FeedModal = ({ isOpen, onClose, editFeed }: Props) => (
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay backdropBlur="20px" />
-    <ModalContent className="bg-slate-800 pb-3 !important">
+    <ModalContent className="feed-modal pb-3">
       <ModalHeader>{editFeed ? "Edit" : "Add"} Feed</ModalHeader>
       <ModalCloseButton />
       <ModalBody>
