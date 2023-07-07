@@ -14,8 +14,7 @@ import FeedModal from "./FeedModal";
 import { useContext, useEffect, useState } from "react";
 import { GuildContext } from "@/context/context";
 import { Guild, IInstance, IStats } from "@/types";
-import { set } from "mongoose";
-import { numberToHex } from "@/utils";
+import { getChannel } from "@/utils/discord";
 
 const Dashboard = () => {
   const { data: session } = useSession();
@@ -45,6 +44,18 @@ const Dashboard = () => {
   const updateData = async (guild: Guild) => {
     let response = await fetch(`/api/getData/?guildId=${guild.id}`);
     const { instances, stats } = await response.json();
+
+    // Get channel name
+
+    const channelIds = [
+      ...new Set(instances.map((i: IInstance) => i.channelId)),
+    ] as string[];
+
+    const channels: any[] = await Promise.all(
+      channelIds.map((id: string) => fetch(`/api/getChannel/?channelId=${id}`))
+    );
+
+    console.log(channels);
 
     // TODO
     // const profileIds = instances.map((i: IInstance) =>
@@ -134,12 +145,14 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="flex">
+        <div className="flex lg:max-h-128">
           <AddFeed className="hidden lg:flex mr-6 w-1/3 p-7" />
 
-          <div className="bg-slate-800 py-7 px-10 rounded-xl flex-1 w-2/3">
+          <div className="flex flex-col bg-slate-800 py-7 px-10 rounded-xl flex-1 w-2/3">
             <div className="flex justify-between w-full items-center mb-7">
-              <h2 className="text-xl font-semibold">Feeds ({feeds.length})</h2>
+              <h2 className="text-xl font-semibold">
+                Feeds ({instances.length})
+              </h2>
               <IconButton
                 onClick={onOpen}
                 className="lg:hidden"
@@ -148,7 +161,7 @@ const Dashboard = () => {
                 icon={<AddIcon color="white" boxSize={5} />}
               />
             </div>
-            <div className="w-full space-y-4 relative">
+            <div className="w-full space-y-4 relative overflow-y-auto scrollbar-hide">
               {instances.map((instance: IInstance, index: number) => (
                 <FeedItem
                   key={index.toString()}
