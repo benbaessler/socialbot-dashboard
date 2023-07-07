@@ -59,19 +59,22 @@ const AddFeed = ({ className }: Props) => {
     }
     setInvalidHandle(false);
 
-    // const create = await fetch("/api/database/create", {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     guildId: guild.id,
-    //     channelId: channel.id,
-    //     handle: profile.handle,
-    //     profileId: hexToNumber(profile.id),
-    //     ownedBy: profile.ownedBy,
-    //     includeMirrors: options.mirrors,
-    //     includeInteractions: options.collects,
-    //     mention: options.mentions,
-    //   }),
-    // });
+    const create = await fetch(
+      "/api/database/create?" +
+        new URLSearchParams({
+          guildId: guild.id,
+          channelId: channel.id,
+          handle: profile.handle,
+          profileId: hexToNumber(profile.id),
+          ownedBy: profile.ownedBy,
+          includeMirrors: options.mirrors.toString(),
+          includeInteractions: options.collects.toString(),
+          mention: options.mentions.toString(),
+        }),
+      {
+        method: "POST",
+      }
+    );
 
     console.log("Instance saved to database");
 
