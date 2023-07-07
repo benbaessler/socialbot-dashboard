@@ -17,6 +17,7 @@ import { GuildContext } from "@/context/Guild";
 import { ChannelsContext } from "@/context/Channels";
 import { FeedsContext } from "@/context/Feeds";
 import { Guild, IInstance, IStats, IFeed } from "@/types";
+import { getPictureUrl, numberToHex } from "@/utils";
 
 const Dashboard = () => {
   const { data: session } = useSession();
@@ -41,35 +42,56 @@ const Dashboard = () => {
 
     const channels = await response.json();
 
-    const _feeds: IFeed[] = instances.map((instance: IInstance) => ({
-      name: "Name",
-      handle: instance.handle,
-      // @ts-ignore
-      channelName: channels.find((c) => c.id === instance.channelId).name,
-      channelId: instance.channelId,
-      mirrors: instance.includeMirrors,
-      collects: instance.includeInteractions,
-      mentions: instance.mention,
-      imageUrl:
-        "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg",
-    }));
-
-
-
     // TODO: Get profile data
-    // const profileIds = instances.map((i: IInstance) =>
-    //   numberToHex(Number(i.profileId))
-    // );
+    const profileIds = instances.map((i: IInstance) =>
+      numberToHex(Number(i.profileId))
+    );
 
-    // const params = new URLSearchParams();
-    // params.append("profileIds", profileIds.join(","));
+    // Split profileIds into batches of 5
+    const batchSize = 5;
+    const profileIdBatches = [];
+    for (let i = 0; i < profileIds.length; i += batchSize) {
+      const batch = profileIds.slice(i, i + batchSize);
+      profileIdBatches.push(batch);
+    }
 
-    // response = await fetch(
-    //   `/api/getProfilePictures/?profileIds=${params.toString()}`
-    // );
+    // Fetch profiles for each batch of profile IDs asynchronously
+    const fetchProfileBatches = profileIdBatches.map((batch) => {
+      const params = new URLSearchParams();
+      params.append("profileIds", batch.join(","));
 
-    // const profilePictures = await response.json();
-    // console.log(profilePictures);
+      return fetch(
+        `/api/lens/getProfiles/?profileIds=${params.toString()}`
+      )
+        .then((response) => response.json())
+        .then((data) => data.profiles.items);
+    });
+
+    // Wait for all profile batches to resolve
+    const profileBatches = await Promise.all(fetchProfileBatches);
+
+    const profiles = profileBatches.flat();
+
+    const _feeds: IFeed[] = instances.map((instance: IInstance) => {
+      const profile = profiles.find(
+        // @ts-ignore
+        (p) => p.id === numberToHex(Number(instance.profileId))
+      );
+
+      return {
+        name: profile.name ?? "Name",
+        handle: instance.handle,
+        // @ts-ignore
+        channelName: channels.find((c) => c.id === instance.channelId).name,
+        channelId: instance.channelId,
+        mirrors: instance.includeMirrors,
+        collects: instance.includeInteractions,
+        mentions: instance.mention,
+        imageUrl:
+          getPictureUrl(profile) ??
+          "https://p7.hiclipart.com/preview/355/848/997/computer-icons-user-profile-google-account-photos-icon-account.jpg",
+      };
+    });
 
     const { postsPosted, commentsPosted, mirrorsPosted, collectsPosted } =
       stats;
