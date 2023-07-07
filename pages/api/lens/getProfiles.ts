@@ -1,6 +1,4 @@
 import { lensClient } from "@/utils";
-import { LENS_API } from "@/utils/constants";
-import { request } from "graphql-request";
 
 // @ts-ignore
 const handler = async (req, res) => {
