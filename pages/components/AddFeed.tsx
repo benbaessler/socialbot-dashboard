@@ -18,6 +18,7 @@ import { IFeed } from "@/types";
 
 interface Props {
   className: string;
+  onClose?: () => void;
 }
 
 interface Options {
@@ -26,7 +27,7 @@ interface Options {
   mentions: boolean;
 }
 
-const AddFeed = ({ className }: Props) => {
+const AddFeed = ({ className, onClose }: Props) => {
   const { channels } = useContext(ChannelsContext);
   const { guild } = useContext(GuildContext);
   const { feeds, setFeeds } = useContext(FeedsContext);
@@ -91,6 +92,8 @@ const AddFeed = ({ className }: Props) => {
       collects: false,
       mentions: false,
     } as Options);
+
+    if (onClose) onClose();
 
     await fetch(
       "/api/database/create?" +
