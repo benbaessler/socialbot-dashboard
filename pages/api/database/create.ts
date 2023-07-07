@@ -41,11 +41,9 @@ const handler = async (req, res) => {
       );
 
       const data = await response.json();
-      console.log(data);
 
       webhookUrl = data.url;
 
-      console.log("Create webhook:", response.status);
     } else {
       webhookUrl = channelInstance.webhookUrl;
     }

@@ -6,7 +6,6 @@ const handler = async (req, res) => {
   await connectDB();
 
   const { guildId, handle, channelId, mirrors, collects, mentions } = req.query;
-  console.log(req.query);
 
   try {
     const update = await Instance.updateOne(
