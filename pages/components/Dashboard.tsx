@@ -20,23 +20,11 @@ const Dashboard = () => {
   const { data: session } = useSession();
   const { guild, setGuild } = useContext(GuildContext);
 
-  const [instances, setInstances] = useState<IInstance[]>([]);
+  const [feeds, setFeeds] = useState<FeedItemProps[]>([]);
   const [stats, setStats] = useState<IStats>();
 
   const [publicationsPosted, setPublicationPosted] = useState(0);
   const [profilesMonitored, setProfilesMonitored] = useState(0);
-
-  const feeds: FeedItemProps[] = [
-    {
-      name: "Ben",
-      handle: "benbaessler",
-      channelName: "lens",
-      mirrors: true,
-      collects: true,
-      mentions: true,
-      imageUrl: "https://avatars.githubusercontent.com/u/78696428?v=4",
-    },
-  ];
 
   // Add Feed Modal
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -52,10 +40,21 @@ const Dashboard = () => {
     ] as string[];
 
     const channels: any[] = await Promise.all(
-      channelIds.map((id: string) => fetch(`/api/getChannel/?channelId=${id}`))
+      channelIds.map((id: string) =>
+        fetch(`/api/getChannel/?channelId=${id}`).then((r) => r.json())
+      )
     );
 
-    console.log(channels);
+    const feeds: FeedItemProps[] = instances.map((instance: IInstance) => ({
+      name: "Name",
+      handle: instance.handle,
+      channelName: channels.find((c) => c.id === instance.channelId).name,
+      mirrors: instance.includeMirrors,
+      collects: instance.includeInteractions,
+      mentions: instance.mention,
+      imageUrl:
+        "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg",
+    }));
 
     // TODO
     // const profileIds = instances.map((i: IInstance) =>
@@ -82,7 +81,7 @@ const Dashboard = () => {
       ...new Set(instances.map((i: IInstance) => i.handle)),
     ].length;
 
-    setInstances(instances);
+    setFeeds(feeds);
     setStats(stats);
     setProfilesMonitored(_profilesMonitored);
   };
@@ -150,9 +149,7 @@ const Dashboard = () => {
 
           <div className="flex flex-col bg-slate-800 py-7 px-10 rounded-xl flex-1 w-2/3">
             <div className="flex justify-between w-full items-center mb-7">
-              <h2 className="text-xl font-semibold">
-                Feeds ({instances.length})
-              </h2>
+              <h2 className="text-xl font-semibold">Feeds ({feeds.length})</h2>
               <IconButton
                 onClick={onOpen}
                 className="lg:hidden"
@@ -162,16 +159,16 @@ const Dashboard = () => {
               />
             </div>
             <div className="w-full space-y-4 relative overflow-y-auto scrollbar-hide">
-              {instances.map((instance: IInstance, index: number) => (
+              {feeds.map((feed: FeedItemProps, index: number) => (
                 <FeedItem
                   key={index.toString()}
-                  name={"Name"}
-                  handle={instance.handle}
-                  channelName={"channel"}
-                  imageUrl={""}
-                  mirrors={instance.includeMirrors}
-                  collects={instance.includeInteractions}
-                  mentions={instance.mention}
+                  name={feed.name}
+                  handle={feed.handle}
+                  channelName={feed.channelName}
+                  imageUrl={feed.imageUrl}
+                  mirrors={feed.mirrors}
+                  collects={feed.collects}
+                  mentions={feed.mentions}
                 />
               ))}
             </div>
