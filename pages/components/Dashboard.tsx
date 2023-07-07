@@ -6,9 +6,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import KeyboardCommandKeyIcon from "@mui/icons-material/KeyboardCommandKey";
 
 import { AddIcon } from "@chakra-ui/icons";
+import { Spinner } from "@chakra-ui/react";
 
 import Card from "./Card";
-import FeedItem  from "./FeedItem";
+import FeedItem from "./FeedItem";
 import AddFeed from "./AddFeed";
 import FeedModal from "./FeedModal";
 import { useContext, useEffect, useState } from "react";
@@ -18,6 +19,7 @@ import { Guild, IInstance, IStats, IFeed } from "@/types";
 
 const Dashboard = () => {
   const { data: session } = useSession();
+  const [loading, setLoading] = useState(true);
   const { guild } = useContext(GuildContext);
   const { channels, setChannels } = useContext(ChannelsContext);
 
@@ -31,22 +33,17 @@ const Dashboard = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const updateData = async (guild: Guild) => {
-    let response = await fetch(`/api/getData/?guildId=${guild.id}`);
+    let response = await fetch(`/api/database/getData/?guildId=${guild.id}`);
     const { instances, stats } = await response.json();
 
-    const channelIds = [
-      ...new Set(instances.map((i: IInstance) => i.channelId)),
-    ] as string[];
+    response = await fetch(`/api/discord/getChannels/?guildId=${guild.id}`);
 
-    const channels: any[] = await Promise.all(
-      channelIds.map((id: string) =>
-        fetch(`/api/getChannel/?channelId=${id}`).then((r) => r.json())
-      )
-    );
+    const channels = await response.json();
 
     const feeds: IFeed[] = instances.map((instance: IInstance) => ({
       name: "Name",
       handle: instance.handle,
+      // @ts-ignore
       channelName: channels.find((c) => c.id === instance.channelId).name,
       mirrors: instance.includeMirrors,
       collects: instance.includeInteractions,
@@ -80,19 +77,28 @@ const Dashboard = () => {
       ...new Set(instances.map((i: IInstance) => i.handle)),
     ].length;
 
-    setChannels(channels);
+    // @ts-ignore
+    setChannels(channels.filter((c) => c.type === 0));
     setFeeds(feeds);
     setStats(stats);
     setProfilesMonitored(_profilesMonitored);
+    setLoading(false);
   };
 
   useEffect(() => {
     if (guild) {
       updateData(guild);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [guild]);
 
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Spinner thickness="5px" speed="0.7s" color="white" size="xl" />
+      </div>
+    );
+  }
   return (
     <>
       <FeedModal isOpen={isOpen} onClose={onClose} />
