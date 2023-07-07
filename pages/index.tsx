@@ -9,11 +9,13 @@ import SignIn from "./components/SignIn";
 import { useSession, signIn } from "next-auth/react";
 import { getOwnedGuilds } from "@/utils/discord";
 import { GuildContext } from "@/context/Guild";
+import { Spinner } from "@chakra-ui/react";
 
 export default function Home() {
   const { data: session, status } = useSession();
   const { guild, setGuild } = useContext(GuildContext);
   const [guilds, setGuilds] = useState();
+  const [loading, setLoading] = useState(true);
 
   const [isUser, setIsUser] = useState(false);
 
@@ -21,6 +23,7 @@ export default function Home() {
     arr1.filter((value: string) => arr2.includes(value));
 
   const fetchData = async () => {
+    setLoading(true);
     const ownedGuilds = await getOwnedGuilds((session as any)?.accessToken);
 
     if (ownedGuilds.length == 0) return;
@@ -48,9 +51,16 @@ export default function Home() {
     if (status == "authenticated") {
       fetchData();
     }
+    setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
-
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Spinner thickness="5px" speed="0.7s" color="white" size="xl" />
+      </div>
+    );
+  }
   return (
     <>
       <Head>
