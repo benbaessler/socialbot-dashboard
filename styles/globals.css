@@ -6,7 +6,7 @@
   transition-duration: 0.2s;
 }
 
-body {
+html {
   color: white;
   background: black;
 }
