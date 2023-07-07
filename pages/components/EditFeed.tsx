@@ -31,7 +31,11 @@ const EditFeed = ({ className, feed }: Props) => {
     mentions: feed.mentions,
   });
 
-  console.log(options);
+  const defaultValue = Object.keys(options).filter(
+    (key) => options[key as keyof Options]
+  );
+
+  console.log(options, defaultValue);
 
   const handleCheckboxChange = (value: keyof Options) => {
     setOptions((prevOptions) => ({
@@ -43,21 +47,7 @@ const EditFeed = ({ className, feed }: Props) => {
   return (
     <div className={`${className} flex-col space-y-5 bg-slate-800 rounded-xl`}>
       <span className="font-semibold mr-2">Handle: @{feed.handle}</span>
-      <div>
-        <div className="flex items-center mb-2">
-          <span className="font-semibold mr-2">Channel</span>
-          <span className="text-sm text-slate-400">
-            The channel to send updates to.
-          </span>
-        </div>
-        <Select defaultValue={feed.channelName}>
-          {channels.map((channel: any) => (
-            <option key={channel.id} value={channel.name}>
-              #{channel.name}
-            </option>
-          ))}
-        </Select>
-      </div>
+      <span className="font-semibold mr-2">Channel: #{feed.channelName}</span>
       <div>
         <div className="flex items-center mb-2">
           <span className="font-semibold mr-2">Options</span>
@@ -65,11 +55,11 @@ const EditFeed = ({ className, feed }: Props) => {
             Specify monitor options.
           </span>
         </div>
-        <CheckboxGroup colorScheme="blue">
+        <CheckboxGroup colorScheme="blue" defaultValue={defaultValue}>
           <Stack direction={["column"]}>
             <Checkbox
               value="mirrors"
-              isChecked={true}
+              isChecked={options.mirrors}
               onChange={() => handleCheckboxChange("mirrors")}
             >
               Include Mirrors
