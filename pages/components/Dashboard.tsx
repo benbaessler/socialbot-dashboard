@@ -109,7 +109,7 @@ const Dashboard = ({ isUser }: Props) => {
     // @ts-ignore
     setChannels(channels.filter((c) => c.type === 0));
     // @ts-ignore
-    setFeeds(_feeds);
+    setFeeds(_feeds.reverse());
     setStats(stats);
     setProfilesMonitored(_profilesMonitored);
     setLoading(false);
