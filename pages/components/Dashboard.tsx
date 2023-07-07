@@ -207,7 +207,7 @@ const Dashboard = ({ isUser }: Props) => {
                   </h2>
                   <IconButton
                     onClick={onOpen}
-                    className="lg:hidden"
+                    className="lg:hidden !important"
                     aria-label="Add feed"
                     colorScheme="blue"
                     icon={<AddIcon color="white" boxSize={5} />}

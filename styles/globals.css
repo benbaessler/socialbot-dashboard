@@ -7,6 +7,6 @@
 }
 
 body, html {
-  color: white;
+  color: white !important;
   background: black;
 }
