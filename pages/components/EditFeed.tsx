@@ -1,14 +1,9 @@
 import { useContext, useEffect } from "react";
-import {
-  Select,
-  Button,
-  Checkbox,
-  CheckboxGroup,
-  Stack,
-} from "@chakra-ui/react";
+import { Button, Checkbox, CheckboxGroup, Stack } from "@chakra-ui/react";
 import { useState } from "react";
 import { ChannelsContext } from "@/context/Channels";
 import { GuildContext } from "@/context/Guild";
+import { FeedsContext } from "@/context/Feeds";
 import { IFeed } from "@/types";
 
 interface Props {
@@ -26,6 +21,7 @@ interface Options {
 const EditFeed = ({ className, feed, onClose }: Props) => {
   const { channels } = useContext(ChannelsContext);
   const { guild } = useContext(GuildContext);
+  const { feeds, setFeeds } = useContext(FeedsContext);
   const [invalidInput, setInvalidInput] = useState(true);
 
   const [options, setOptions] = useState<Options>({
@@ -38,8 +34,6 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
     (key) => options[key as keyof Options]
   );
 
-  console.log(options, defaultValue);
-
   const handleCheckboxChange = (value: keyof Options) => {
     setOptions((prevOptions) => ({
       ...prevOptions,
@@ -48,6 +42,17 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
   };
 
   const handleSubmit = async () => {
+    console.log(feeds);
+    const _feeds = feeds;
+    const feedIndex = _feeds.findIndex(
+      // @ts-ignore
+      (f) => f.handle == feed.handle && f.channelId == feed.channelId
+    );
+
+    _feeds[feedIndex].mirrors = options.mirrors;
+    _feeds[feedIndex].collects = options.collects;
+    _feeds[feedIndex].mentions = options.mentions;
+
     const response = await fetch(
       "/api/database/update?" +
         new URLSearchParams({
@@ -66,10 +71,7 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
       }
     );
 
-    if (response.status == 200) {
-      console.log("updated");
-      onClose();
-    }
+    if (response.status == 200) onClose();
   };
 
   useEffect(() => {
@@ -78,10 +80,8 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
       options.collects == feed.collects &&
       options.mentions == feed.mentions
     ) {
-      console.log(false);
       setInvalidInput(true);
     } else {
-      console.log(true);
       setInvalidInput(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

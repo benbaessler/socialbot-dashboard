@@ -14,6 +14,7 @@ import OptionIcon from "./OptionIcon";
 import FeedModal from "./FeedModal";
 import { IFeed } from "@/types";
 import { GuildContext } from "@/context/Guild";
+import { FeedsContext } from "@/context/Feeds";
 
 interface Props {
   data: IFeed;
@@ -23,6 +24,7 @@ const FeedItem = ({ data }: Props) => {
   // Edit Feed Modal
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { guild } = useContext(GuildContext);
+  const { feeds, setFeeds } = useContext(FeedsContext);
 
   const icons = [];
   if (data.mentions)
@@ -47,7 +49,13 @@ const FeedItem = ({ data }: Props) => {
       />
     );
 
-  const handleDelete = async () =>
+  const handleDelete = async () => {
+    const newFeeds = feeds.filter(
+      (feed: IFeed) =>
+        feed.handle !== data.handle || feed.channelId !== data.channelId
+    );
+    setFeeds(newFeeds);
+
     await fetch(
       "api/database/delete?" +
         new URLSearchParams({
@@ -59,6 +67,7 @@ const FeedItem = ({ data }: Props) => {
         method: "POST",
       }
     );
+  };
 
   return (
     <>

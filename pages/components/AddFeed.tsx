@@ -12,8 +12,9 @@ import { AtSignIcon } from "@chakra-ui/icons";
 import { useState, useContext } from "react";
 import { GuildContext } from "@/context/Guild";
 import { ChannelsContext } from "@/context/Channels";
-import { hexToNumber } from "@/utils";
-import axios from "axios";
+import { FeedsContext } from "@/context/Feeds";
+import { hexToNumber, getPictureUrl } from "@/utils";
+import { IFeed } from "@/types";
 
 interface Props {
   className: string;
@@ -28,6 +29,7 @@ interface Options {
 const AddFeed = ({ className }: Props) => {
   const { channels } = useContext(ChannelsContext);
   const { guild } = useContext(GuildContext);
+  const { feeds, setFeeds } = useContext(FeedsContext);
 
   const [invalidHandle, setInvalidHandle] = useState(false);
 
@@ -49,8 +51,6 @@ const AddFeed = ({ className }: Props) => {
   };
 
   const handleSubmit = async () => {
-    console.log(handle, options, channel);
-
     const res = await fetch(`/api/lens/getProfile?handle=${handle}`);
     const profile = await res.json();
 
@@ -59,7 +59,31 @@ const AddFeed = ({ className }: Props) => {
     }
     setInvalidHandle(false);
 
-    const create = await fetch(
+    const _feeds = [
+      {
+        name: profile.name,
+        handle: profile.handle,
+        channelName: channel.name,
+        channelId: channel.id,
+        mirrors: options.mirrors,
+        collects: options.collects,
+        mentions: options.mentions,
+        imageUrl: getPictureUrl(profile),
+      } as IFeed,
+      ...feeds,
+    ];
+
+    setFeeds(_feeds);
+
+    setHandle("");
+    setChannel(undefined);
+    setOptions({
+      mirrors: false,
+      collects: false,
+      mentions: false,
+    } as Options);
+
+    await fetch(
       "/api/database/create?" +
         new URLSearchParams({
           guildId: guild.id,
@@ -75,16 +99,6 @@ const AddFeed = ({ className }: Props) => {
         method: "POST",
       }
     );
-
-    console.log("Instance saved to database");
-
-    setHandle("");
-    setChannel(undefined);
-    setOptions({
-      mirrors: false,
-      collects: false,
-      mentions: false,
-    });
   };
 
   return (
@@ -116,6 +130,7 @@ const AddFeed = ({ className }: Props) => {
         </div>
         <Select
           placeholder="Select a channel"
+          value={channel?.name || "Select a channel"}
           onChange={(e) => {
             setChannel(
               channels.find((channel: any) => channel.name == e.target.value)

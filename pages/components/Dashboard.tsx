@@ -15,6 +15,7 @@ import FeedModal from "./FeedModal";
 import { useContext, useEffect, useState } from "react";
 import { GuildContext } from "@/context/Guild";
 import { ChannelsContext } from "@/context/Channels";
+import { FeedsContext } from "@/context/Feeds";
 import { Guild, IInstance, IStats, IFeed } from "@/types";
 
 const Dashboard = () => {
@@ -22,8 +23,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const { guild } = useContext(GuildContext);
   const { channels, setChannels } = useContext(ChannelsContext);
+  const { feeds, setFeeds } = useContext(FeedsContext);
 
-  const [feeds, setFeeds] = useState<IFeed[]>([]);
   const [stats, setStats] = useState<IStats>();
 
   const [publicationsPosted, setPublicationPosted] = useState(0);
@@ -40,7 +41,7 @@ const Dashboard = () => {
 
     const channels = await response.json();
 
-    const feeds: IFeed[] = instances.map((instance: IInstance) => ({
+    const _feeds: IFeed[] = instances.map((instance: IInstance) => ({
       name: "Name",
       handle: instance.handle,
       // @ts-ignore
@@ -53,7 +54,9 @@ const Dashboard = () => {
         "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg",
     }));
 
-    // TODO
+
+
+    // TODO: Get profile data
     // const profileIds = instances.map((i: IInstance) =>
     //   numberToHex(Number(i.profileId))
     // );
@@ -80,7 +83,8 @@ const Dashboard = () => {
 
     // @ts-ignore
     setChannels(channels.filter((c) => c.type === 0));
-    setFeeds(feeds);
+    // @ts-ignore
+    setFeeds(_feeds);
     setStats(stats);
     setProfilesMonitored(_profilesMonitored);
     setLoading(false);
