@@ -210,6 +210,7 @@ const Dashboard = ({ isUser }: Props) => {
                     className="lg:hidden !important"
                     aria-label="Add feed"
                     colorScheme="blue"
+                    variant='ghost'
                     icon={<AddIcon color="white" boxSize={5} />}
                   />
                 </div>

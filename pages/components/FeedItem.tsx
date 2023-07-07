@@ -99,12 +99,14 @@ const FeedItem = ({ data }: Props) => {
             onClick={onOpen}
             aria-label="edit"
             colorScheme="blue"
+            variant='ghost'
             icon={<EditIcon color="white" boxSize={5} />}
           />
           <IconButton
             onClick={handleDelete}
             aria-label="delete"
             colorScheme="red"
+            variant='ghost'
             icon={<CloseIcon color="white" />}
           />
         </div>
