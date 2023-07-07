@@ -24,7 +24,7 @@ const FeedModal = ({ isOpen, onClose, editFeed }: Props) => (
       <ModalCloseButton />
       <ModalBody>
         {editFeed ? (
-          <EditFeed className="flex" feed={editFeed} />
+          <EditFeed className="flex" feed={editFeed} onClose={onClose} />
         ) : (
           <AddFeed className="flex" />
         )}
