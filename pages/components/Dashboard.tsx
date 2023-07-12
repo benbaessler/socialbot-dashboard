@@ -173,7 +173,7 @@ const Dashboard = ({ isUser }: Props) => {
         </div>
         {isUser && (
           <>
-            <div className="bg-slate-800 py-7 px-10 rounded-xl">
+            <div className="bg-slate-800 p-5 sm:p-7 rounded-xl">
               <h2 className="text-xl font-semibold mb-7">Overview</h2>
               <div className="flex flex-wrap gap-x-4 justify-center">
                 <Card
@@ -200,7 +200,7 @@ const Dashboard = ({ isUser }: Props) => {
             <div className="flex lg:max-h-128">
               <AddFeed className="hidden lg:flex mr-6 w-1/3 p-7" />
 
-              <div className="flex flex-col bg-slate-800 py-7 px-10 rounded-xl flex-1 w-2/3">
+              <div className="flex flex-col bg-slate-800 p-5 sm:p-7 rounded-xl flex-1 w-2/3">
                 <div className="flex justify-between w-full items-center mb-7">
                   <h2 className="text-xl font-semibold">
                     Feeds ({feeds.length})
