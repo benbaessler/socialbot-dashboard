@@ -39,7 +39,7 @@ export default function Home() {
       botGuildIds.includes(g.id)
     );
 
-    if (botGuilds.length == 0) return;
+    if (botGuilds.length == 0) return setLoading(false);
 
     setIsUser(true);
     setGuilds(botGuilds);
