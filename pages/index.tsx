@@ -39,17 +39,16 @@ export default function Home() {
       botGuildIds.includes(g.id)
     );
 
-    if (botGuilds.length == 0) return setLoading(false);
+    if (botGuilds.length == 0) return;
 
     setIsUser(true);
     setGuilds(botGuilds);
     setGuild(botGuilds[0]);
-    setLoading(false);
   };
 
   useEffect(() => {
     if (status == "authenticated") {
-      fetchData();
+      fetchData().then(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
