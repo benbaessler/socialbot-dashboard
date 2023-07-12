@@ -23,7 +23,6 @@ export default function Home() {
     arr1.filter((value: string) => arr2.includes(value));
 
   const fetchData = async () => {
-    setLoading(true);
     const ownedGuilds = await getOwnedGuilds((session as any)?.accessToken);
 
     if (ownedGuilds.length == 0) return;
@@ -45,22 +44,15 @@ export default function Home() {
     setIsUser(true);
     setGuilds(botGuilds);
     setGuild(botGuilds[0]);
+    setLoading(false);
   };
 
   useEffect(() => {
     if (status == "authenticated") {
       fetchData();
     }
-    setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
-  if (loading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <Spinner thickness="5px" speed="0.7s" color="white" size="xl" />
-      </div>
-    );
-  }
   return (
     <>
       <Head>
@@ -71,8 +63,12 @@ export default function Home() {
         />
       </Head>
       <main className="bg-black">
-        {status !== "authenticated" ? (
+        {status == "unauthenticated" ? (
           <SignIn />
+        ) : loading ? (
+          <div className="h-screen flex items-center justify-center">
+            <Spinner thickness="5px" speed="0.7s" color="white" size="xl" />
+          </div>
         ) : (
           <>
             <Navbar guilds={guilds} />
