@@ -47,7 +47,7 @@ const Navbar = ({ guilds }: any) => {
           </Select>
         )}
         <button
-          className="flex bg-gray-800 hover:bg-gray-900 text-white py-2 px-4 rounded-md"
+          className="flex items-center bg-gray-800 hover:bg-gray-900 text-white py-2 px-4 rounded-md"
           onClick={() => signOut()}
         >
           <LogoutIcon fontSize="small" />
