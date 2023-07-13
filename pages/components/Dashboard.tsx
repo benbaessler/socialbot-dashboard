@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { IconButton, useDisclosure } from "@chakra-ui/react";
+import { IconButton, Skeleton, useDisclosure } from "@chakra-ui/react";
 
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import PersonIcon from "@mui/icons-material/Person";
@@ -16,6 +16,7 @@ import { useContext, useEffect, useState } from "react";
 import { GuildContext } from "@/context/Guild";
 import { ChannelsContext } from "@/context/Channels";
 import { FeedsContext } from "@/context/Feeds";
+import { FetchingContext } from "@/context/Fetching";
 import { Guild, IInstance, IStats, IFeed } from "@/types";
 import { getPictureUrl, numberToHex } from "@/utils";
 
@@ -25,8 +26,8 @@ interface Props {
 
 const Dashboard = ({ isUser }: Props) => {
   const { data: session } = useSession();
-  const [loading, setLoading] = useState(true);
   const { guild } = useContext(GuildContext);
+  const { fetching, setFetching } = useContext(FetchingContext);
   const { channels, setChannels } = useContext(ChannelsContext);
   const { feeds, setFeeds } = useContext(FeedsContext);
 
@@ -39,7 +40,7 @@ const Dashboard = ({ isUser }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const updateData = async (guild: Guild) => {
-    setLoading(true);
+    setFetching(true);
     let response = await fetch(`/api/database/getData/?guildId=${guild.id}`);
     const { instances, stats } = await response.json();
 
@@ -112,25 +113,16 @@ const Dashboard = ({ isUser }: Props) => {
     setFeeds(_feeds.reverse());
     setStats(stats);
     setProfilesMonitored(_profilesMonitored);
-    setLoading(false);
+    setFetching(false);
   };
 
   useEffect(() => {
     if (guild) {
       updateData(guild);
     }
-
-    setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [guild, isUser]);
 
-  if (loading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <Spinner thickness="5px" speed="0.7s" color="white" size="xl" />
-      </div>
-    );
-  }
   return (
     <>
       <FeedModal isOpen={isOpen} onClose={onClose} />
