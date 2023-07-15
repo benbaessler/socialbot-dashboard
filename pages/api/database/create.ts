@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Instance from "@/models/Instance";
-import { connectDB } from "@/utils";
+import { connectDB, disconnectDB } from "@/utils";
 
 // @ts-ignore
 const handler = async (req, res) => {
@@ -66,6 +66,7 @@ const handler = async (req, res) => {
     console.error("Error creating instance:", error);
     res.status(500).json({ error: "Failed to create instance" });
   }
+  await disconnectDB();
 };
 
 export default handler;

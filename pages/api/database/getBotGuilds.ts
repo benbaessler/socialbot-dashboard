@@ -1,4 +1,4 @@
-import { connectDB } from "@/utils";
+import { connectDB, disconnectDB } from "@/utils";
 import Stats from "@/models/Stats";
 
 // @ts-ignore
@@ -13,6 +13,7 @@ const handler = async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Server Error" });
   }
+  await disconnectDB();
 };
 
 export default handler;
