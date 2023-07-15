@@ -116,14 +116,19 @@ const FeedItem = ({ data }: Props) => {
             className="rounded-full mr-3 sm:h-12 sm:w-12"
           />
           <div className="space-y-1.5">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-              <span className="text-sm sm:text-base font-semibold">
+            <a
+              href={`https://lensvert.xyz/u/${data?.handle}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col sm:flex-row sm:items-center sm:space-x-2"
+            >
+              <span className="text-sm sm:text-base font-semibold hover:text-cyan-100">
                 {data?.name}
               </span>
-              <span className="text-xs sm:text-sm text-slate-300">
+              <span className="text-xs sm:text-sm text-slate-300 hover:text-cyan-100">
                 @{data?.handle}
               </span>
-            </div>
+            </a>
             <FeedOptions style="hidden sm:flex" />
           </div>
         </div>
