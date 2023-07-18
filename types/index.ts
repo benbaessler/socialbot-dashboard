@@ -41,3 +41,8 @@ export interface IFeed {
   mentions: boolean;
   imageUrl: string;
 }
+
+export interface IVersion {
+  version: string;
+  description: string;
+}

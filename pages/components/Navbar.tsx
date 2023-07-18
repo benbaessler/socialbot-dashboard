@@ -1,17 +1,19 @@
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 import LogoutIcon from "@mui/icons-material/Logout";
 import LogoImage from "@/assets/logo.png";
 
-import { Select, Button } from "@chakra-ui/react";
+import { Select } from "@chakra-ui/react";
 
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useContext } from "react";
 import { GuildContext } from "@/context/Guild";
-import { Guild } from "@/types";
+import { Guild, IVersion } from "@/types";
 
 const Navbar = ({ guilds }: any) => {
   const { guild, setGuild } = useContext(GuildContext);
+  const [version, setVersion] = useState<IVersion>();
 
   const handleGuildChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedGuildId = event.target.value;
@@ -20,6 +22,17 @@ const Navbar = ({ guilds }: any) => {
     );
     setGuild(selectedGuild);
   };
+
+  const fetchVersion = async () => {
+    const res = await fetch("/api/database/getVersion");
+    const data = await res.json();
+    setVersion(data);
+    console.log(data);
+  };
+
+  useEffect(() => {
+    fetchVersion();
+  }, []);
 
   return (
     <nav className="flex w-full p-4 justify-between">
@@ -32,7 +45,7 @@ const Navbar = ({ guilds }: any) => {
           <Image src={LogoImage} alt="Lens Echo" width={40} />
         </a>
         <div className="hidden md:flex bg-slate-700 py-2 px-4 rounded-full ml-3 text-sm font-semibold">
-          Version 1.2.5
+          Version {version?.version}
         </div>
       </div>
 
