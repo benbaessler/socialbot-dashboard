@@ -23,7 +23,13 @@ export default function Home() {
     arr1.filter((value: string) => arr2.includes(value));
 
   const fetchData = async () => {
-    const ownedGuilds = await getOwnedGuilds((session as any)?.accessToken);
+    let ownedGuilds;
+    try {
+      ownedGuilds = await getOwnedGuilds((session as any)?.accessToken);
+    } catch {
+      // To refresh the access token
+      signIn("discord");
+    }
 
     if (ownedGuilds.length == 0) return;
 
