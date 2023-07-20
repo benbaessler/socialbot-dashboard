@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Instance from "@/models/Instance";
-import { connectDB, disconnectDB } from "@/utils";
+import connectDB from "@/utils/db";
 
 // @ts-ignore
-const handler = async (req, res) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await connectDB();
 
   const {
@@ -43,7 +43,6 @@ const handler = async (req, res) => {
       const data = await response.json();
 
       webhookUrl = data.url;
-
     } else {
       webhookUrl = channelInstance.webhookUrl;
     }
@@ -66,7 +65,6 @@ const handler = async (req, res) => {
     console.error("Error creating instance:", error);
     res.status(500).json({ error: "Failed to create instance" });
   }
-  await disconnectDB();
 };
 
 export default handler;

@@ -1,5 +1,5 @@
 import VersionManager from "@/models/VersionManager";
-import { connectDB, disconnectDB } from "@/utils";
+import connectDB from '@/utils/db';
 
 // @ts-ignore
 const handler = async (req, res) => {
@@ -15,7 +15,6 @@ const handler = async (req, res) => {
     res.status(500).json({ error: "Server Error" });
   }
 
-  await disconnectDB();
 };
 
 export default handler;

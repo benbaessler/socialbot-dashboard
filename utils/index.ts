@@ -2,16 +2,6 @@ import mongoose from "mongoose";
 import { LensClient, ProfileFragment, production } from "@lens-protocol/client";
 require("dotenv").config();
 
-export const connectDB = async () => {
-  await mongoose.connect(process.env.MONGODB_URI!);
-  console.log("Connected to DB");
-};
-
-export const disconnectDB = async () => {
-  await mongoose.disconnect();
-  console.log("Disconnected from DB");
-};
-
 export const lensClient = new LensClient({
   environment: production,
 });
