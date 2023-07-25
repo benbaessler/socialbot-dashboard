@@ -37,21 +37,21 @@ const FeedItem = ({ data }: Props) => {
     icons.push(
       <OptionIcon
         title={"Mentions everyone"}
-        icon={<AtSignIcon fontSize="small" />}
+        icon={<AtSignIcon fontSize="medium" />}
       />
     );
   if (data?.mirrors)
     icons.push(
       <OptionIcon
         title={"Mirrors included"}
-        icon={<RepeatIcon fontSize="small" />}
+        icon={<RepeatIcon fontSize="medium" />}
       />
     );
   if (data?.collects)
     icons.push(
       <OptionIcon
         title={"Collects included"}
-        icon={<CopyIcon fontSize="small" />}
+        icon={<CopyIcon fontSize="medium" />}
       />
     );
 

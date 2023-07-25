@@ -1,4 +1,4 @@
-// import { Tooltip } from '@chakra-ui/react'
+import { Tooltip } from "@chakra-ui/react";
 
 interface Props {
   title: string;
@@ -6,12 +6,9 @@ interface Props {
 }
 
 const OptionIcon = ({ title, icon }: Props) => (
-  // <Tooltip
-  //   title={title}
-  //   hasArrow
-  // >
-  <div>{icon}</div>
-  // </Tooltip>
+  <Tooltip label={title} hasArrow>
+    <div className="cursor-pointer">{icon}</div>
+  </Tooltip>
 );
 
 export default OptionIcon;
