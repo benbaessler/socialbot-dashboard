@@ -15,7 +15,7 @@ export default function Home() {
   const { data: session, status } = useSession();
   const { guild, setGuild } = useContext(GuildContext);
   const [guilds, setGuilds] = useState();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [isUser, setIsUser] = useState(false);
 
@@ -54,10 +54,12 @@ export default function Home() {
 
   useEffect(() => {
     if (status == "authenticated") {
+      setLoading(true);
       fetchData().then(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
+
   return (
     <>
       <Head>
