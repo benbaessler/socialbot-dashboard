@@ -6,9 +6,9 @@ interface Props {
 }
 
 const OptionIcon = ({ title, icon }: Props) => (
-  <Tooltip label={title} hasArrow>
+  // <Tooltip label={title} placement="bottom" hasArrow>
     <div className="cursor-pointer">{icon}</div>
-  </Tooltip>
+  // {/* </Tooltip> */}
 );
 
 export default OptionIcon;
