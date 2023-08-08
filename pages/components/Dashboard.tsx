@@ -140,7 +140,7 @@ const Dashboard = ({ isUser }: Props) => {
             If you need help getting started, you can start by reading through
             Lens Echo’s{" "}
             <a
-              href="https://docs.lenspedia.xyz/getting-started/tools/lens-echo"
+              href="https://docs.lenspedia.xyz/tools/lens-echo"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sky-300 hover:text-sky-400"
