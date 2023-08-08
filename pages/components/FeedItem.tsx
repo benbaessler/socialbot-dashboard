@@ -117,7 +117,7 @@ const FeedItem = ({ data }: Props) => {
           />
           <div className="space-y-1.5">
             <a
-              href={`https://lensvert.xyz/u/${data?.handle}`}
+              href={`https://share.lens.xyz/u/${data?.handle}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex flex-col sm:flex-row sm:items-center sm:space-x-2"
