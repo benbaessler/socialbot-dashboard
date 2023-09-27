@@ -22,6 +22,7 @@ interface Props {
 }
 
 interface Options {
+  comments: boolean;
   mirrors: boolean;
   collects: boolean;
   mentions: boolean;
@@ -38,6 +39,7 @@ const AddFeed = ({ className, onClose }: Props) => {
   const [channel, setChannel] = useState<any>();
   const [handle, setHandle] = useState("");
   const [options, setOptions] = useState<Options>({
+    comments: false,
     mirrors: false,
     collects: false,
     mentions: false,
@@ -75,6 +77,7 @@ const AddFeed = ({ className, onClose }: Props) => {
         handle: profile.handle,
         channelName: channel.name,
         channelId: channel.id,
+        comments: options.comments,
         mirrors: options.mirrors,
         collects: options.collects,
         mentions: options.mentions,
@@ -88,6 +91,7 @@ const AddFeed = ({ className, onClose }: Props) => {
     setHandle("");
     setChannel(undefined);
     setOptions({
+      comments: false,
       mirrors: false,
       collects: false,
       mentions: false,
@@ -103,6 +107,7 @@ const AddFeed = ({ className, onClose }: Props) => {
           handle: profile.handle,
           profileId: hexToNumber(profile.id),
           ownedBy: profile.ownedBy,
+          includeComments: options.comments.toString(),
           includeMirrors: options.mirrors.toString(),
           includeInteractions: options.collects.toString(),
           mention: options.mentions.toString(),
@@ -168,6 +173,13 @@ const AddFeed = ({ className, onClose }: Props) => {
           </div>
           <CheckboxGroup colorScheme="blue">
             <Stack direction={["column"]}>
+              <Checkbox
+                value="comments"
+                isChecked={options.mirrors}
+                onChange={() => handleCheckboxChange("comments")}
+              >
+                Include Comments
+              </Checkbox>
               <Checkbox
                 value="mirrors"
                 isChecked={options.mirrors}
