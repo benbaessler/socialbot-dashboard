@@ -25,6 +25,7 @@ export interface IInstance extends Document {
   handle: string;
   profileId: string;
   ownedBy: string;
+  includeComments: boolean;
   includeMirrors: boolean;
   includeInteractions: boolean;
   mention: boolean;

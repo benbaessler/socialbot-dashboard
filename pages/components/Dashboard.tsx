@@ -88,6 +88,7 @@ const Dashboard = ({ isUser }: Props) => {
         // @ts-ignore
         channelName: channels.find((c) => c.id === instance.channelId).name,
         channelId: instance.channelId,
+        comments: instance.includeComments,
         mirrors: instance.includeMirrors,
         collects: instance.includeInteractions,
         mentions: instance.mention,
