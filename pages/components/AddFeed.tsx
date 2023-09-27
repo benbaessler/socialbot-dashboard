@@ -175,7 +175,7 @@ const AddFeed = ({ className, onClose }: Props) => {
             <Stack direction={["column"]}>
               <Checkbox
                 value="comments"
-                isChecked={options.mirrors}
+                isChecked={options.comments}
                 onChange={() => handleCheckboxChange("comments")}
               >
                 Include Comments
