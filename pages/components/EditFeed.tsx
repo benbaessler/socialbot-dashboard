@@ -13,6 +13,7 @@ interface Props {
 }
 
 interface Options {
+  comments: boolean;
   mirrors: boolean;
   collects: boolean;
   mentions: boolean;
@@ -25,6 +26,7 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
   const [invalidInput, setInvalidInput] = useState(true);
 
   const [options, setOptions] = useState<Options>({
+    comments: feed?.comments,
     mirrors: feed?.mirrors,
     collects: feed?.collects,
     mentions: feed?.mentions,
@@ -49,6 +51,7 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
       (f) => f.handle == feed?.handle && f.channelId == feed?.channelId
     );
 
+    _feeds[feedIndex].comments = options.comments;
     _feeds[feedIndex].mirrors = options.mirrors;
     _feeds[feedIndex].collects = options.collects;
     _feeds[feedIndex].mentions = options.mentions;
@@ -62,6 +65,7 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
             // @ts-ignore
             (channel) => channel.name == feed?.channelName
           ).id,
+          comments: options.comments.toString(),
           mirrors: options.mirrors.toString(),
           collects: options.collects.toString(),
           mentions: options.mentions.toString(),
@@ -76,6 +80,7 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
 
   useEffect(() => {
     if (
+      options.comments == feed?.comments &&
       options.mirrors == feed?.mirrors &&
       options.collects == feed?.collects &&
       options.mentions == feed?.mentions
@@ -100,6 +105,13 @@ const EditFeed = ({ className, feed, onClose }: Props) => {
         </div>
         <CheckboxGroup colorScheme="blue" defaultValue={defaultValue}>
           <Stack direction={["column"]}>
+            <Checkbox
+              value="comments"
+              isChecked={options.comments}
+              onChange={() => handleCheckboxChange("comments")}
+            >
+              Include Comments
+            </Checkbox>
             <Checkbox
               value="mirrors"
               isChecked={options.mirrors}

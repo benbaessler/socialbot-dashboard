@@ -25,6 +25,7 @@ export interface IInstance extends Document {
   handle: string;
   profileId: string;
   ownedBy: string;
+  includeComments: boolean;
   includeMirrors: boolean;
   includeInteractions: boolean;
   mention: boolean;
@@ -36,6 +37,7 @@ export interface IFeed {
   handle: string;
   channelName: string;
   channelId: string;
+  comments: boolean;
   mirrors: boolean;
   collects: boolean;
   mentions: boolean;

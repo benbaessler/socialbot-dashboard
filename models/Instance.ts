@@ -21,6 +21,10 @@ const Instance = new Schema({
     type: String,
     required: true,
   },
+  includeComments: {
+    type: Boolean,
+    required: true,
+  },
   includeMirrors: {
     type: Boolean,
     required: true,

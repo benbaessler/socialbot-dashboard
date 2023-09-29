@@ -8,6 +8,7 @@ import {
   useMediaQuery,
 } from "@chakra-ui/react";
 import {
+  ChatIcon,
   AtSignIcon,
   CloseIcon,
   CopyIcon,
@@ -38,6 +39,13 @@ const FeedItem = ({ data }: Props) => {
       <OptionIcon
         title={"Mentions everyone"}
         icon={<AtSignIcon fontSize="medium" />}
+      />
+    );
+  if (data?.comments) 
+    icons.push(
+      <OptionIcon
+        title={"Comments included"}
+        icon={<ChatIcon fontSize="medium" />}
       />
     );
   if (data?.mirrors)
