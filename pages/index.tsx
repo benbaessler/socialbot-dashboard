@@ -70,13 +70,13 @@ export default function Home() {
         />
       </Head>
       <main className="bg-black">
-        {status == "unauthenticated" ? (
-          <SignIn />
-        ) : loading ? (
+        {loading && (
           <div className="h-screen flex items-center justify-center">
             <Spinner thickness="5px" speed="0.7s" color="white" size="xl" />
           </div>
-        ) : (
+        )}
+        {status === "unauthenticated" && !loading && <SignIn />}
+        {status === "authenticated" && !loading && (
           <>
             <Navbar guilds={guilds} />
             <div className="flex justify-center">
