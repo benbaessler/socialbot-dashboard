@@ -63,10 +63,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Lens Echo - Dashboard</title>
+        <title>Dashboard • Social Bot</title>
         <meta
           name="description"
-          content="View and manage your Lens Echo activity + statistics."
+          content="View and manage your Social Bot activity + statistics."
         />
       </Head>
       <main className="bg-black">

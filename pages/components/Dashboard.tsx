@@ -135,11 +135,11 @@ const Dashboard = ({ isUser }: Props) => {
           </h1>
           <span>
             <span className="font-semibold">
-              You can manage your Lens Echo settings, activity and view usage
+              You can manage your Social Bot settings, activity and view usage
               statistics here.
             </span>{" "}
             If you need help getting started, you can start by reading through
-            Lens Echo’s{" "}
+            Social Bot’s{" "}
             <a
               href="https://docs.lenspedia.xyz/tools/lens-echo"
               target="_blank"
@@ -152,10 +152,10 @@ const Dashboard = ({ isUser }: Props) => {
           </span>
           {!isUser && <span className="text-lg">
             {
-              "It looks like you're not using Lens Echo yet, invite the bot to your server "
+              "It looks like you're not using Social Bot yet, invite the bot to your server "
             }
             <a
-              href="https://lensecho.xyz"
+              href="https://socialbot.gg"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sky-400 hover:text-sky-500 font-semibold"
