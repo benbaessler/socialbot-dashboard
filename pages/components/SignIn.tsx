@@ -25,7 +25,7 @@ const SignIn = () => {
           </Button>
 
           <Button colorScheme="green" variant="solid" className="text-white">
-            <a href="https://lensecho.xyz">Invite bot</a>
+            <a href="https://socialbot.gg">Invite bot</a>
           </Button>
         </div>
       </div>

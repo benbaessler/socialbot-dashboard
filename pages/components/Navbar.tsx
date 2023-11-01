@@ -38,11 +38,11 @@ const Navbar = ({ guilds }: any) => {
     <nav className="flex w-full p-4 justify-between">
       <div className="flex items-center">
         <a
-          href="https://lenster.xyz/u/lensecho"
+          href="https://share.lens.xyz/u/lensecho.lens"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Image src={LogoImage} alt="Lens Echo" width={40} />
+          <Image src={LogoImage} alt="Social Bot" width={40} />
         </a>
         <div className="hidden md:flex bg-slate-700 py-2 px-4 rounded-full ml-3 text-sm font-semibold">
           Version {version?.version}
