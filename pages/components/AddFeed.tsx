@@ -13,7 +13,7 @@ import { useState, useContext } from "react";
 import { GuildContext } from "@/context/Guild";
 import { ChannelsContext } from "@/context/Channels";
 import { FeedsContext } from "@/context/Feeds";
-import { hexToNumber, getPictureUrl, parseHandle } from "@/utils";
+import { hexToNumber, getAvatar, parseHandle } from "@/utils";
 import { IFeed } from "@/types";
 
 interface Props {
@@ -81,7 +81,7 @@ const AddFeed = ({ className, onClose }: Props) => {
         mirrors: options.mirrors,
         collects: options.collects,
         mentions: options.mentions,
-        imageUrl: getPictureUrl(profile),
+        imageUrl: getAvatar(profile),
       } as IFeed,
       ...feeds,
     ];

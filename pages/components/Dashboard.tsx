@@ -18,7 +18,7 @@ import { ChannelsContext } from "@/context/Channels";
 import { FeedsContext } from "@/context/Feeds";
 import { FetchingContext } from "@/context/Fetching";
 import { Guild, IInstance, IStats, IFeed } from "@/types";
-import { getPictureUrl, numberToHex } from "@/utils";
+import { getAvatar, numberToHex } from "@/utils";
 
 interface Props {
   isUser: boolean;
@@ -93,7 +93,7 @@ const Dashboard = ({ isUser }: Props) => {
         collects: instance.includeInteractions,
         mentions: instance.mention,
         imageUrl:
-          getPictureUrl(profile) ??
+          getAvatar(profile) ??
           "https://p7.hiclipart.com/preview/355/848/997/computer-icons-user-profile-google-account-photos-icon-account.jpg",
       };
     });
@@ -150,19 +150,21 @@ const Dashboard = ({ isUser }: Props) => {
             </a>
             .
           </span>
-          {!isUser && <span className="text-lg">
-            {
-              "It looks like you're not using Social Bot yet, invite the bot to your server "
-            }
-            <a
-              href="https://socialbot.gg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sky-400 hover:text-sky-500 font-semibold"
-            >
-              here
-            </a>
-          </span>}
+          {!isUser && (
+            <span className="text-lg">
+              {
+                "It looks like you're not using Social Bot yet, invite the bot to your server "
+              }
+              <a
+                href="https://socialbot.gg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sky-400 hover:text-sky-500 font-semibold"
+              >
+                here
+              </a>
+            </span>
+          )}
         </div>
         {isUser && (
           <>
@@ -203,7 +205,7 @@ const Dashboard = ({ isUser }: Props) => {
                     className="lg:hidden !important"
                     aria-label="Add feed"
                     colorScheme="blue"
-                    variant='ghost'
+                    variant="ghost"
                     icon={<AddIcon color="white" boxSize={5} />}
                   />
                 </div>
