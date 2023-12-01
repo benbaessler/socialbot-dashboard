@@ -6,7 +6,7 @@ const handler = async (req, res) => {
 
   try {
     const profile = await lensClient.profile.fetch({
-      handle: parseHandle(handle),
+      forHandle: parseHandle(handle),
     });
     res.status(200).json(profile);
   } catch (error) {

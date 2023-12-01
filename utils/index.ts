@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
 import { LensClient, ProfileFragment, production } from "@lens-protocol/client";
+import urlcat from "urlcat";
+import { sanitizeDStorageUrl } from "./sanitizeDStorageUrl";
 require("dotenv").config();
 
 export const lensClient = new LensClient({
@@ -18,37 +19,48 @@ export const numberToHex = (num: number) => {
 
 export const hexToNumber = (hex: string) => parseInt(hex, 16).toString();
 
-
 export const parseHandle = (input: string): string => {
-  if (!input.endsWith(".lens") && input != "lensprotocol") {
-    return input + ".lens";
+  if (!input.includes("/")) {
+    return `lens/${input}`;
   }
   return input;
 };
 
-export const getPictureUrl = (profile: ProfileFragment) => {
-  const picture = profile.picture;
-  return picture
-    ? picture.__typename == "MediaSet"
-      ? parseUri(picture.original.url)
-      : // @ts-ignore
-        parseUri(picture.uri)
-    : "";
+/**
+ * Returns the avatar image URL for a given profile.
+ *
+ * @param profile The profile object.
+ * @param namedTransform The named transform to use.
+ * @returns The avatar image URL.
+ */
+export const getAvatar = (profile: any): string => {
+  const avatarUrl =
+    // Group Avatar fallbacks
+    profile?.avatar ??
+    // Lens NFT Avatar fallbacks
+    profile?.metadata?.picture?.image?.optimized?.uri ??
+    profile?.metadata?.picture?.image?.raw?.uri ??
+    // Lens Profile Avatar fallbacks
+    profile?.metadata?.picture?.optimized?.uri ??
+    profile?.metadata?.picture?.raw?.uri ??
+    // Stamp.fyi Avatar fallbacks
+    getStampFyiURL(
+      profile?.ownedBy.address ?? "0x0000000000000000000000000000000000000000"
+    );
+
+  return sanitizeDStorageUrl(avatarUrl);
 };
 
-export const parseIpfs = (ipfs: string) => {
-  const hash = ipfs.split("/")[ipfs.split("/").length - 1];
-  return `https://ipfs.io/ipfs/${hash}`;
-};
-
-export const parseUri = (uri: string) => {
-  if (uri.includes("ipfs")) {
-    return parseIpfs(uri);
-  }
-  if (uri.startsWith("https://")) {
-    return uri;
-  }
-  if (uri.startsWith("ar://")) {
-    return "https://arweave.net/" + uri.split("/")[uri.split("/").length - 1];
-  }
+/**
+ * Returns the cdn.stamp.fyi URL for the specified Ethereum address.
+ *
+ * @param address The Ethereum address to get the URL for.
+ * @returns The cdn.stamp.fyi URL.
+ */
+const getStampFyiURL = (address: string): string => {
+  const lowerCaseAddress = address.toLowerCase();
+  return urlcat("https://cdn.stamp.fyi/avatar/eth::address", {
+    address: lowerCaseAddress,
+    s: 300,
+  });
 };
