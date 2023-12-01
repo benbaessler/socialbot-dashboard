@@ -19,6 +19,7 @@ import { FeedsContext } from "@/context/Feeds";
 import { FetchingContext } from "@/context/Fetching";
 import { Guild, IInstance, IStats, IFeed } from "@/types";
 import { getAvatar, numberToHex } from "@/utils";
+import { ProfileFragment } from "@lens-protocol/client";
 
 interface Props {
   isUser: boolean;
@@ -74,7 +75,7 @@ const Dashboard = ({ isUser }: Props) => {
     // Wait for all profile batches to resolve
     const profileBatches = await Promise.all(fetchProfileBatches);
 
-    const profiles = profileBatches.flat();
+    const profiles: ProfileFragment[] = profileBatches.flat();
 
     const _feeds: IFeed[] = (instances ?? []).map((instance: IInstance) => {
       const profile = profiles.find(
@@ -83,7 +84,7 @@ const Dashboard = ({ isUser }: Props) => {
       );
 
       return {
-        name: profile.name ?? "Name",
+        name: profile!.metadata?.displayName ?? instance.handle,
         handle: instance.handle,
         // @ts-ignore
         channelName: channels.find((c) => c.id === instance.channelId).name,

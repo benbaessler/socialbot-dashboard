@@ -22,7 +22,7 @@ interface Options {
 const EditFeed = ({ className, feed, onClose }: Props) => {
   const { channels } = useContext(ChannelsContext);
   const { guild } = useContext(GuildContext);
-  const { feeds, setFeeds } = useContext(FeedsContext);
+  const { feeds } = useContext(FeedsContext);
   const [invalidInput, setInvalidInput] = useState(true);
 
   const [options, setOptions] = useState<Options>({

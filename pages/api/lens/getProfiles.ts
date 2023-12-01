@@ -7,7 +7,7 @@ const handler = async (req, res) => {
 
   try {
     const profiles = await lensClient.profile.fetchAll({
-      profileIds: parsed,
+      where: { profileIds: parsed },
     });
     res.status(200).json({ profiles });
   } catch (error) {

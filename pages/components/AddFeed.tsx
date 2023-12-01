@@ -73,7 +73,7 @@ const AddFeed = ({ className, onClose }: Props) => {
 
     const _feeds = [
       {
-        name: profile.name,
+        name: profile.metadata.displayName,
         handle: profile.handle,
         channelName: channel.name,
         channelId: channel.id,
