@@ -12,6 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     handle,
     profileId,
     ownedBy,
+    includeComments,
     includeMirrors,
     includeInteractions,
     mention,
@@ -34,8 +35,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
           },
           body: JSON.stringify({
-            name: "Lens Echo",
-            avatar: "https://i.imgur.com/u03AmLH.png",
+            name: "Social Bot",
+            avatar: "https://i.imgur.com/GGXvzmz.png",
           }),
         }
       );
@@ -53,6 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       handle,
       profileId,
       ownedBy,
+      includeComments,
       includeMirrors,
       includeInteractions,
       mention,

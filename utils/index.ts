@@ -21,9 +21,9 @@ export const hexToNumber = (hex: string) => parseInt(hex, 16).toString();
 
 export const parseHandle = (input: string): string => {
   if (!input.includes("/")) {
-    return `lens/${input}`;
+    return `lens/${input}`.replace(".lens", "");
   }
-  return input;
+  return input.replace(".lens", "");
 };
 
 /**

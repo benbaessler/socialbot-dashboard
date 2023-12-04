@@ -74,7 +74,7 @@ const AddFeed = ({ className, onClose }: Props) => {
     const _feeds = [
       {
         name: profile.metadata.displayName,
-        handle: profile.handle,
+        handle: profile.handle.fullHandle,
         channelName: channel.name,
         channelId: channel.id,
         comments: options.comments,
@@ -104,9 +104,9 @@ const AddFeed = ({ className, onClose }: Props) => {
         new URLSearchParams({
           guildId: guild.id,
           channelId: channel.id,
-          handle: profile.handle,
+          handle: profile.handle.fullHandle,
           profileId: hexToNumber(profile.id),
-          ownedBy: profile.ownedBy,
+          ownedBy: profile.ownedBy.address,
           includeComments: options.comments.toString(),
           includeMirrors: options.mirrors.toString(),
           includeInteractions: options.collects.toString(),
